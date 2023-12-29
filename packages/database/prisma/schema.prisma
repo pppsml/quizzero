@@ -1,0 +1,32 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../dist"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("MONGODB_URI")
+}
+
+model User {
+  id          String  @id @default(auto()) @map("_id") @db.ObjectId
+  email       String  @unique
+  name        String?
+  password    String
+  displayName String
+  isVerified  Boolean @default(false)
+
+  quizzes Quiz[]
+
+  createdAt DateTime @default(now())
+}
+
+model Quiz {
+  id    String @id @default(auto()) @map("_id") @db.ObjectId
+  title String
+
+  userId    String @db.ObjectId
+  createdBy User   @relation(fields: [userId], references: [id])
+
+  createdAt DateTime @default(now())
+}
