@@ -1,10 +1,13 @@
 import { Module } from '@nestjs/common';
+import { Request, Response } from 'express';
 import { ConfigModule } from '@nestjs/config';
-import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo'
-import { GraphQLModule } from '@nestjs/graphql'
+import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
+import { GraphQLModule } from '@nestjs/graphql';
 
 import { PrismaModule } from './prisma/prisma.module';
 import { UserModule } from './user/user.module';
+import { IContext } from './types/context';
+import { QuizModule } from './quiz/quiz.module';
 
 @Module({
   imports: [
@@ -14,16 +17,25 @@ import { UserModule } from './user/user.module';
     }),
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
-      playground: true,
+      playground: {
+        settings: {
+          'request.credentials': 'include',
+        },
+      },
       buildSchemaOptions: {
-        dateScalarMode: 'timestamp',
+        dateScalarMode: 'isoDate',
       },
       autoSchemaFile: true,
+      context: async ({ req, res }: { req: Request; res: Response }) => ({
+        req,
+        res,
+        user: req.session.user || null,
+      } as IContext),
     }),
     PrismaModule,
     UserModule,
+    QuizModule,
   ],
   controllers: [],
-  providers: [],
 })
 export class AppModule {}

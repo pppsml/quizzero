@@ -1,8 +1,8 @@
 import { Field, ObjectType } from "@nestjs/graphql";
-import { User as UserType } from "@repo/database";
+import { User } from "@repo/database";
 
 @ObjectType()
-export class User implements Omit<UserType, 'password'> {
+export class GqlUser implements Omit<User, 'password'> {
   @Field(() => String)
   id: string;
 

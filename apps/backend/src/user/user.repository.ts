@@ -1,12 +1,18 @@
 import { Injectable } from '@nestjs/common';
-import { User } from '@repo/database';
+import { User } from '@repo/database'
 
 import { PrismaService } from 'src/prisma/prisma.service';
+import { CreateUserInput } from './dto/createUser.input';
+import { GqlUser } from './user.schema'
 
 interface UserRepositoryInterface {
-  getById: (id: User['id']) => Promise<User>;
+  findOneById: (id: User['id']) => Promise<GqlUser>;
 
-  create: (data: Pick<User, 'email' | 'name' | 'password'>) => Promise<User>;
+  findOneByEmail: (email: User['email']) => Promise<GqlUser>;
+
+  createOne: (data: CreateUserInput) => Promise<GqlUser>;
+
+  updateOne: (id: User['id'], data: User) => Promise<GqlUser>
 }
 
 export const UserRepositorySymbol = Symbol();
@@ -15,11 +21,15 @@ export const UserRepositorySymbol = Symbol();
 export class PrismaUserRepository implements UserRepositoryInterface {
   constructor(private readonly prismaService: PrismaService) {}
 
-  async getById(id: User['id']) {
+  async findOneById(id: User['id']) {
     return await this.prismaService.user.findUnique({ where: { id } });
   }
 
-  async create({ email, name, password }: Pick<User, 'email' | 'name' | 'password'>) {
+  async findOneByEmail(email: User['email']) {
+    return await this.prismaService.user.findUnique({ where: { email } })
+  }
+
+  async createOne({ email, name, password }: CreateUserInput) {
     return await this.prismaService.user.create({
       data: {
         email,
@@ -28,5 +38,12 @@ export class PrismaUserRepository implements UserRepositoryInterface {
         password,
       },
     });
+  }
+
+  async updateOne(id: User['id'], data: Partial<User>) {
+    return await this.prismaService.user.update({
+      where: { id },
+      data,
+    })
   }
 }
