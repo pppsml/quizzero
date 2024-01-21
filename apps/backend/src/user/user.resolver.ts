@@ -6,10 +6,14 @@ import { UserService } from "./user.service";
 import { GqlUser } from "./user.schema";
 import { CreateUserInput } from "./dto/createUser.input";
 import { IContext } from "src/types/context";
+import { MailerService } from "src/mailer/mailer.service";
 
 @Resolver('user')
 export class UserResolver {
-  constructor(private readonly userService: UserService) {}
+  constructor(
+    private readonly userService: UserService,
+    private readonly mailerService: MailerService,
+  ) {}
 
   @Query(() => GqlUser, { nullable: true })
   async me(@Context('user') user: IContext['user']) {
@@ -21,6 +25,11 @@ export class UserResolver {
   @Query(() => String)
   async getUserHello() {
     return 'Hello from UserResolver';
+  }
+
+  @Query(() => Boolean)
+  async getEmail(@Args('email') email: string) {
+    return await this.mailerService.sendConfirmationMail(email)
   }
 
   @Mutation(() => GqlUser)
