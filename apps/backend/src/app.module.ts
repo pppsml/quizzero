@@ -1,18 +1,19 @@
 import { Module } from '@nestjs/common';
 import { Request, Response } from 'express';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { GraphQLModule } from '@nestjs/graphql';
-import { MailerModule } from '@nestjs-modules/mailer'
-import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter'
+import { MailerModule } from '@nestjs-modules/mailer';
+import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
+import { join } from 'path';
 
 import { PrismaModule } from './prisma/prisma.module';
 import { UserModule } from './user/user.module';
 import { IContext } from './types/context';
 import { QuizModule } from './quiz/quiz.module';
-import { join } from 'path';
+import { ConfigServiceVariables } from './config/configService.config';
 
-console.log(process.cwd() + '/templates/')
+console.log(process.cwd() + '/templates/');
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -30,33 +31,37 @@ console.log(process.cwd() + '/templates/')
         dateScalarMode: 'isoDate',
       },
       autoSchemaFile: true,
-      context: async ({ req, res }: { req: Request; res: Response }) => ({
-        req,
-        res,
-        user: req.session.user || null,
-      } as IContext),
+      context: async ({ req, res }: { req: Request; res: Response }) =>
+        ({
+          req,
+          res,
+          user: req.session.user || null,
+        }) as IContext,
     }),
-    MailerModule.forRoot({
-      transport: {
-        host: process.env.NODEMAILER_TRANSPORT_HOST,
-        port: Number(process.env.NODEMAILER_TRANSPORT_PORT),
-        auth: {
-          user: process.env.NODEMAILER_EMAIL,
-          pass: process.env.NODEMAILER_PASSWORD,
-          clientId: process.env.GOOGLE_CLIENT_ID,
-          clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-        }
-      },
-      defaults: {
-        from: `${process.env.NODEMAILER_NAME} <${process.env.NODEMAILER_EMAIL}>`,
-      },
-      template: {
-        dir: join(__dirname, '/mailer/templates/'),
-        adapter: new HandlebarsAdapter(),
-        options: {
-          strict: true,
-        }
-      },
+    MailerModule.forRootAsync({
+      inject: [ConfigService],
+      useFactory: async (configService: ConfigService<ConfigServiceVariables>) => ({
+        transport: {
+          host: configService.get('NODEMAILER_TRANSPORT_HOST'),
+          port: Number(configService.get('NODEMAILER_TRANSPORT_PORT')),
+          auth: {
+            user: configService.get('NODEMAILER_EMAIL'),
+            pass: configService.get('NODEMAILER_PASSWORD'),
+            clientId: configService.get('GOOGLE_CLIENT_ID'),
+            clientSecret: configService.get('GOOGLE_CLIENT_SECRET'),
+          },
+        },
+        defaults: {
+          from: `${configService.get('NODEMAILER_NAME')} <${configService.get('NODEMAILER_EMAIL')}>`,
+        },
+        template: {
+          dir: join(__dirname, '/mailer/templates/'),
+          adapter: new HandlebarsAdapter(),
+          options: {
+            strict: true,
+          },
+        },
+      })
     }),
     PrismaModule,
     UserModule,

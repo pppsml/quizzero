@@ -19,41 +19,45 @@ model Session {
 }
 
 model User {
-  id          String  @id @default(auto()) @map("_id") @db.ObjectId
-  email       String  @unique
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  email       String   @unique
   name        String?
   displayName String
   password    String
-  isVerified  Boolean @default(false)
-
-  quizzes Quiz[]
-
-  createdAt DateTime @default(now())
+  isVerified  Boolean  @default(false)
+  quizzes     Quiz[]
+  createdAt   DateTime @default(now())
 
   @@map("users")
 }
 
-
 type AnswerOption {
-  id Int
+  id   Int
   text String
 }
 
 type Question {
-  id Int
-  text String
+  id            Int
+  text          String
   answerOptions AnswerOption[]
-  correct Int
+  correct       Int
 }
+
 model Quiz {
-  id    String @id @default(auto()) @map("_id") @db.ObjectId
-  title String
+  id        String     @id @default(auto()) @map("_id") @db.ObjectId
+  title     String
   questions Question[]
-
-  userId    String @db.ObjectId
-  createdBy User   @relation(fields: [userId], references: [id])
-
-  createdAt DateTime @default(now())
+  userId    String     @db.ObjectId
+  createdBy User       @relation(fields: [userId], references: [id])
+  createdAt DateTime   @default(now())
 
   @@map("quizzes")
+}
+
+model VerificationCode {
+  id     String @id @default(auto()) @map("_id") @db.ObjectId
+  code   String @unique @default(cuid())
+  userId String @db.ObjectId
+
+  @@map("verificationCodes")
 }

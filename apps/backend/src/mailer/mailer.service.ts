@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { MailerService as NestjsNodemailerService } from '@nestjs-modules/mailer'
 
 @Injectable()
@@ -9,15 +9,15 @@ export class MailerService {
 
   private readonly baseSubject: string;
 
-  async sendConfirmationMail(to: string): Promise<boolean> {
+  async sendConfirmationMail({ email, url }: { email: string, url: string }): Promise<boolean> {
     try {
       this.mailer.sendMail({
-        to,
+        to: email,
         subject: this.baseSubject + 'Подтверждение почты',
         template: 'confirm-email',
         context: {
-          email: to,
-          url: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+          email,
+          url,
         },
       });
       return true;

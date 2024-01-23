@@ -5,11 +5,15 @@ import { PrismaSessionStore } from '@quixo3/prisma-session-store'
 
 import { AppModule } from './app.module';
 import { PrismaService } from './prisma/prisma.service';
+import { ConfigServiceVariables } from './config/configService.config';
+import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  const configService = app.get(ConfigService)
+  const configService = app.get(ConfigService<ConfigServiceVariables>);
   const prisma = app.get(PrismaService)
+
+  app.useGlobalPipes(new ValidationPipe())
 
   app.enableCors({
     origin: true,
