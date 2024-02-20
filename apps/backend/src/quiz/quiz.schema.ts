@@ -1,11 +1,15 @@
-import { Field, ID, Int, ObjectType } from '@nestjs/graphql'
+import { Field, Int, ObjectType } from '@nestjs/graphql'
+import { IAnswerOption, IQuestion, IQuiz } from '@repo/types';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Types } from 'mongoose'
 
-import { Quiz, Question, AnswerOption } from '@repo/database/dist';
-import { GqlUser } from 'src/user/user.schema';
+import { User } from 'src/user/user.schema';
+
+import { GraphQLObjectId } from 'src/types/scalars/gqlObjectId';
 
 
 @ObjectType()
-export class GqlAnswerOption implements AnswerOption {
+export class AnswerOption implements IAnswerOption {
   @Field(() => Int)
   id: number;
 
@@ -14,34 +18,47 @@ export class GqlAnswerOption implements AnswerOption {
 }
 
 @ObjectType()
-export class GqlQuestion implements Question {
+export class Question implements IQuestion {
   @Field(() => Int)
   id: number;
 
   @Field(() => String)
   text: string;
 
-  @Field(() => [GqlAnswerOption])
-  answerOptions: GqlAnswerOption[]
+  @Field(() => [AnswerOption])
+  answerOptions: AnswerOption[]
 
   @Field(() => Int)
   correct: number;
 }
 
 @ObjectType()
-export class GqlQuiz implements Partial<Quiz> {
-  @Field(() => ID)
-  id: string;
+@Schema({ timestamps: {
+    createdAt: true,
+    updatedAt: true,
+  },
+})
+export class Quiz implements IQuiz {
+  @Field(() => GraphQLObjectId)
+  _id: string;
 
   @Field(() => String)
+  @Prop({ type: () => String, required: true, })
   title: string;
+  
+  @Field(() => [Question])
+  @Prop({ type: () => [Question], required: true, })
+  questions: Question[];
 
-  @Field(() => [GqlQuestion])
-  questions: GqlQuestion[];
-
-  @Field(() => GqlUser)
-  createdBy: GqlUser;
+  @Field(() => User)
+  @Prop({ type: () => Types.ObjectId, ref: () => User })
+  createdBy: User;
 
   @Field(() => Date)
   createdAt: Date;
+  
+  @Field(() => Date)
+  updatedAt: Date;
 }
+
+export const QuizSchema = SchemaFactory.createForClass(Quiz)

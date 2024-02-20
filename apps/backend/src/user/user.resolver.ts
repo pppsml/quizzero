@@ -4,30 +4,33 @@ import { Resolver, Mutation, Query, Args, Context } from '@nestjs/graphql';
 import { Request } from 'express';
 
 import { UserService } from './user.service';
-import { GqlUser } from './user.schema';
+import { User } from './user.schema';
 import { CreateUserInput } from './dto/createUser.input';
 import { MailerService } from '../mailer/mailer.service';
-import { IContext } from '../types/context';
+
+import { IContext } from '../types';
 import { ConfigServiceVariables } from '../config/configService.config';
+// import { UserActiveSessionService } from 'src/userActiveSession/userActiveSession.service';
 
 @Resolver('user')
 export class UserResolver {
   constructor(
     private readonly userService: UserService,
     private readonly mailerService: MailerService,
+    // private readonly userActiveSessionService: UserActiveSessionService,
     private readonly configService: ConfigService<ConfigServiceVariables>,
   ) {}
 
-  @Query(() => GqlUser, { nullable: true })
-  async me(@Context('user') user: IContext['user']) {
-    if (!user) return null;
-    const mongoUser = await this.userService.getUserById(user.id);
-    return mongoUser;
+  @Query(() => User, { nullable: true })
+  async me(@Context('user') sessionUser: IContext['user']) {
+    if (!sessionUser) return null;
+    const user = await this.userService.getUserById(sessionUser._id);
+    return user;
   }
 
-  @Query(() => String)
-  async getUserHello() {
-    return 'Hello from UserResolver';
+  @Query(() => User, { nullable: true, })
+  async getUserById(@Args('id') id: string) {
+    return await this.userService.getUserById(id);
   }
 
   @Query(() => Boolean)
@@ -38,17 +41,12 @@ export class UserResolver {
     // return await this.mailerService.sendConfirmationMail({ email, url });
   }
 
-  @Mutation(() => GqlUser)
+  @Mutation(() => User)
   async createUser(@Args('createUserInput') createUserInput: CreateUserInput) {
     return await this.userService.createUser(createUserInput);
   }
 
-  @Mutation(() => GqlUser)
-  async getUserById(@Args('id') id: string) {
-    return await this.userService.getUserById(id);
-  }
-
-  @Mutation(() => GqlUser)
+  @Mutation(() => User)
   async login(
     @Args('email') email: string,
     @Args('password') password: string,
@@ -57,10 +55,12 @@ export class UserResolver {
     const user = await this.userService.login(email, password);
 
     req.session.user = {
-      id: user.id,
+      _id: user._id,
     };
 
-    req.session.save();
+    console.log(req.sessionID);
+
+    // console.log(await this.userActiveSessionService.createOne(req.sessionID, user.id))
 
     return user;
   }
@@ -76,12 +76,12 @@ export class UserResolver {
     });
   }
 
-  @Mutation(() => GqlUser)
+  @Mutation(() => Boolean)
   async changePassword(
     @Args('email') email: string,
     @Args('oldPassword') oldPassword: string,
     @Args('newPassword') newPassword: string,
-  ): Promise<GqlUser> {
+  ): Promise<boolean> {
     return await this.userService.changePassword(
       email,
       oldPassword,
@@ -89,11 +89,11 @@ export class UserResolver {
     );
   }
 
-  @Mutation(() => Boolean)
-  async verifyUser(
-    @Args('email') email: string,
-    @Args('token') token: string,
-  ) {
-    return await this.userService.verifyUser(email, token)
-  }
+  // @Mutation(() => Boolean)
+  // async verifyUser(
+  //   @Args('email') email: string,
+  //   @Args('token') token: string,
+  // ) {
+  //   return await this.userService.verifyUser(email, token)
+  // }
 }

@@ -1,26 +1,25 @@
-import { Inject, Injectable } from "@nestjs/common";
-import { User, VerificationCode } from "@repo/database";
+// import { Inject, Injectable } from "@nestjs/common";
 
-import { PrismaVerificationCodeRepository, VerificationCodeRepositorySymbol } from "./verificationCode.repository";
+// import { PrismaVerificationCodeRepository, VerificationCodeRepositorySymbol } from "./verificationCode.repository";
 
-@Injectable()
-export class VerificationCodeService {
-  constructor(
-    @Inject(VerificationCodeRepositorySymbol)
-    private readonly verificationCodeRepository: PrismaVerificationCodeRepository,
-  ) {}
+// @Injectable()
+// export class VerificationCodeService {
+//   constructor(
+//     @Inject(VerificationCodeRepositorySymbol)
+//     private readonly verificationCodeRepository: PrismaVerificationCodeRepository,
+//   ) {}
 
-  async createOne(userId: User['id']): Promise<VerificationCode> {
-    return await this.verificationCodeRepository.createOne(userId)
-  }
+//   async createOne(userId: User['id']): Promise<VerificationCode> {
+//     return await this.verificationCodeRepository.createOne(userId)
+//   }
 
-  async findOneByUserId(
-    userId: User['id'],
-  ): Promise<VerificationCode> {
-    return await this.verificationCodeRepository.findOneByUserId(userId)
-  }
+//   async findOneByUserId(
+//     userId: User['id'],
+//   ): Promise<VerificationCode> {
+//     return await this.verificationCodeRepository.findOneByUserId(userId)
+//   }
 
-  async deleteOneById(id: VerificationCode['id']): Promise<boolean> {
-    return await this.verificationCodeRepository.deleteOneById(id)
-  }
-}
+//   async deleteOneById(id: VerificationCode['id']): Promise<boolean> {
+//     return await this.verificationCodeRepository.deleteOneById(id)
+//   }
+// }

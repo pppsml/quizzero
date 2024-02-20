@@ -1,8 +1,8 @@
-import { User } from "@repo/database/dist"
+import { IUser } from "@repo/types"
 
 declare module 'express-session' {
   interface SessionData {
-    user?: Pick<User, 'id'>
+    user?: Pick<IUser, '_id'>
   }
 }
 

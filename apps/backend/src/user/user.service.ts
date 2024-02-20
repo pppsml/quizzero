@@ -1,81 +1,73 @@
 import {
   BadRequestException,
   ConflictException,
-  Inject,
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
 import { compareSync, hashSync } from 'bcrypt';
-import { User } from '@repo/database';
 
-import { PrismaUserRepository, UserRepositorySymbol } from './user.repository';
-import { VerificationCodeService } from 'src/verificationCode/verificationCode.service';
+import { User } from './user.schema'
+import { CreateUserInput } from './dto/createUser.input';
+
 import { MailerService } from 'src/mailer/mailer.service';
 
-import { CreateUserInput } from './dto/createUser.input';
 import { ConfigServiceVariables } from 'src/config/configService.config';
 
 @Injectable()
 export class UserService {
   constructor(
-    @Inject(UserRepositorySymbol)
-    private readonly userRepository: PrismaUserRepository,
-
+    @InjectModel(User.name)
+    private readonly userModel: Model<User>,
     private readonly mailerService: MailerService,
-
-    private readonly verificationCodeService: VerificationCodeService,
-
     private readonly configService: ConfigService<ConfigServiceVariables>,
   ) {}
 
-  private readonly saltRounds = 10;
-
-  private getHash(data: string) {
-    return hashSync(data, this.saltRounds);
+  async getUserById(id: string): Promise<User> {
+    return this.userModel.findById(id);
   }
 
-  async getUserById(id: User['id']): Promise<User> {
-    return await this.userRepository.findOneById(id);
-  }
-
-  async createUser(createUserInput: CreateUserInput): Promise<User> {
-    const existingUser = await this.userRepository.findOneByEmail(
-      createUserInput.email,
-    );
+  async createUser({ email, password, name }: CreateUserInput): Promise<User> {
+    const existingUser = await this.userModel.findOne({
+      email,
+    });
 
     if (existingUser) {
       throw new ConflictException(
-        `User with email "${createUserInput.email}" already exists`,
+        `User with email "${email}" already exists`,
       );
     }
 
-    const hashedPass = this.getHash(createUserInput.password);
-    createUserInput.password = hashedPass;
-
-    const user = await this.userRepository.createOne(createUserInput);
-    const verificationCode = await this.verificationCodeService.createOne(
-      user.id,
-    );
-
-    const hashedVerificationCode = this.getHash(
-      `${verificationCode}_${createUserInput.email}`,
-    );
-
-    const url = `${this.configService.get('FRONTEND_ENDPOIND_VERIFY')}?email=${
-      createUserInput.email
-    }&token=${hashedVerificationCode}`;
-
-    this.mailerService.sendConfirmationMail({
-      email: createUserInput.email,
-      url,
+    const user = await this.userModel.create({
+      email,
+      name,
+      displayName: name || email,
+      password,
     });
+    // const verificationCode = await this.verificationCodeService.createOne(
+    //   user.id,
+    // );
+
+    // const hashedVerificationCode = this.getHash(
+    //   `${verificationCode}_${createUserInput.email}`,
+    // );
+
+    // const url = `${this.configService.get('FRONTEND_ENDPOIND_VERIFY')}?email=${
+    //   createUserInput.email
+    // }&token=${hashedVerificationCode}`;
+
+    // this.mailerService.sendConfirmationMail({
+    //   email: createUserInput.email,
+    //   url,
+    // });
 
     return user;
   }
 
   async login(email: User['email'], password: User['password']) {
-    const user = await this.userRepository.findOneByEmail(email);
+    const user = await this.userModel.findOne({ email })
     if (!user) throw new UnauthorizedException('Uncorrect email');
 
     const passIsValid = compareSync(password, user.password);
@@ -88,8 +80,8 @@ export class UserService {
     email: User['email'],
     oldPassword: User['password'],
     newPassword: User['password'],
-  ) {
-    const user = await this.userRepository.findOneByEmail(email);
+  ): Promise<boolean> {
+    const user = await this.userModel.findOne({ email });
     if (!user) throw new UnauthorizedException('Uncorrect email');
 
     if (oldPassword === newPassword) {
@@ -101,44 +93,46 @@ export class UserService {
       throw new UnauthorizedException('Uncorrect old password');
     }
 
-    const newPasswordHash = this.getHash(newPassword);
+    const newPasswordHash = hashSync(newPassword, 10);
 
-    return await this.userRepository.updateOne(user.id, {
+    await this.userModel.updateOne({ _id: user._id }, {
       password: newPasswordHash,
-    });
-  }
-
-  async verifyUser(email: User['email'], token: string): Promise<boolean> {
-    const user = await this.userRepository.findOneByEmail(email);
-    if (!user) {
-      throw new UnauthorizedException(
-        `User with email "${email}" does not exists`,
-      );
-    }
-
-    if (user.isVerified) {
-      throw new ConflictException(
-        'User already verified'
-      )
-    }
-
-    const verificationCode = await this.verificationCodeService.findOneByUserId(
-      user.id,
-    );
-    // todo check on token expire time
-    const tokenIsValid = compareSync(
-      `${verificationCode}_${user.email}`,
-      token,
-    );
-
-    if (!tokenIsValid) return false
-
-    await this.userRepository.updateOne(user.id, {
-      isVerified: true,
     })
 
-    await this.verificationCodeService.deleteOneById(verificationCode.id)
-
-    return true;
+    return true
   }
+
+  // async verifyUser(email: User['email'], token: string): Promise<boolean> {
+  //   const user = await this.userRepository.findOneByEmail(email);
+  //   if (!user) {
+  //     throw new UnauthorizedException(
+  //       `User with email "${email}" does not exists`,
+  //     );
+  //   }
+
+  //   if (user.isVerified) {
+  //     throw new ConflictException(
+  //       'User already verified'
+  //     )
+  //   }
+
+  //   const verificationCode = await this.verificationCodeService.findOneByUserId(
+  //     user.id,
+  //   );
+  //   // todo check on token expire time
+  //   const tokenIsValid = compareSync(
+  //     `${verificationCode}_${user.email}`,
+  //     token,
+  //   );
+
+  //   if (!tokenIsValid) return false
+
+  //   await this.userRepository.updateOne(user.id, {
+  //     isVerified: true,
+  //   })
+
+  //   await this.verificationCodeService.deleteOneById(verificationCode.id)
+
+  //   return true;
+  // }
 }

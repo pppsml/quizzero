@@ -1,16 +1,11 @@
-import { Module } from "@nestjs/common";
+// import { Module } from "@nestjs/common";
 
-import { VerificationCodeService } from "./verificationCode.service";
-import { PrismaVerificationCodeRepository, VerificationCodeRepositorySymbol } from "./verificationCode.repository";
+// import { VerificationCodeService } from "./verificationCode.service";
 
-@Module({
-  providers: [
-    VerificationCodeService,
-    {
-      provide: VerificationCodeRepositorySymbol,
-      useClass: PrismaVerificationCodeRepository,
-    }
-  ],
-  exports: [VerificationCodeService],
-})
-export class VerificationCodeModule {}
+// @Module({
+//   providers: [
+//     VerificationCodeService,
+//   ],
+//   exports: [VerificationCodeService],
+// })
+// export class VerificationCodeModule {}

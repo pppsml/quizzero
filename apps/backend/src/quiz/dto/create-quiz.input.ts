@@ -1,8 +1,8 @@
 import { Field, InputType, Int } from '@nestjs/graphql';
-import { GqlQuiz, GqlQuestion, GqlAnswerOption } from '../quiz.schema';
+import { Quiz, Question, AnswerOption } from '../quiz.schema';
 
 @InputType()
-class AnswerOptionInput implements GqlAnswerOption {
+class AnswerOptionInput implements AnswerOption {
   @Field(() => Int)
   id: number;
 
@@ -11,7 +11,7 @@ class AnswerOptionInput implements GqlAnswerOption {
 }
 
 @InputType()
-class QuestionInput implements GqlQuestion {
+class QuestionInput implements Question {
   @Field(() => Int)
   id: number;
 
@@ -26,7 +26,7 @@ class QuestionInput implements GqlQuestion {
 }
 
 @InputType()
-export class CreateQuizInput implements Partial<GqlQuiz> {
+export class CreateQuizInput implements Partial<Quiz> {
   @Field(() => String)
   title: string;
 

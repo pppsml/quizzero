@@ -1,17 +1,21 @@
 import { Args, Context, Mutation, Query, Resolver } from '@nestjs/graphql';
-import { Quiz } from '@repo/database/dist';
+import { ConflictException, UnauthorizedException } from '@nestjs/common';
 
 import { QuizService } from './quiz.service';
-import { GqlQuiz } from './quiz.schema';
+import { Quiz } from './quiz.schema';
 import { CreateQuizInput } from './dto/create-quiz.input';
+import { UserService } from 'src/user/user.service';
+
 import { IContext } from 'src/types/context';
-import { UnauthorizedException } from '@nestjs/common';
 
 @Resolver()
 export class QuizResolver {
-  constructor(private readonly quizService: QuizService) {}
+  constructor(
+    private readonly quizService: QuizService,
+    private readonly userService: UserService
+  ) {}
   
-  @Query(() => GqlQuiz)
+  @Query(() => Quiz)
   async getQuizById(
     @Args('quizId') quizId: string
   ) {
@@ -19,13 +23,17 @@ export class QuizResolver {
   }
 
 
-  @Mutation(() => GqlQuiz)
+  @Mutation(() => Quiz)
   async createQuiz(
     @Args('createQuizInput') createQuizInput: CreateQuizInput,
-    @Context('user') user: IContext['user'],
+    @Context('user') sessionUser: IContext['user'],
   ) {
-    if (!user) throw new UnauthorizedException('You must log in')
-    return await this.quizService.createQuiz(createQuizInput, user.id);
+    if (!sessionUser) throw new UnauthorizedException('You must log in')
+
+    const user = await this.userService.getUserById(sessionUser._id)
+    if (!user) throw new ConflictException('User does not exists')
+
+    return await this.quizService.createQuiz(createQuizInput, user._id);
   }
 
 }

@@ -1,18 +1,30 @@
-import { Inject, Injectable } from '@nestjs/common';
-import { Quiz, User } from '@repo/database';
+import { Injectable } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model, ObjectId, Types } from 'mongoose';
 
-import { PrismaQuizRepository, QuizRepositorySymbol } from './quiz.repository';
+import { Question, Quiz } from './quiz.schema';
+
 import { CreateQuizInput } from './dto/create-quiz.input';
 
 @Injectable()
 export class QuizService {
-  constructor(@Inject(QuizRepositorySymbol) private readonly quizRepository: PrismaQuizRepository) {}
+  constructor(@InjectModel(Quiz.name) private readonly quizModel: Model<Quiz>) {}
 
-  async createQuiz(createQuizInput: CreateQuizInput, userId: User['id']): Promise<Quiz> {
-    return await this.quizRepository.createOne(createQuizInput, userId)
+  // private readonly checkQuestion: (question: typeof Question) => {
+  //   question
+  // }
+
+  async createQuiz({ title, questions }: CreateQuizInput, userId: any): Promise<Quiz> {
+    const quiz = await this.quizModel.create({
+      title,
+      questions,
+      createdBy: userId,
+    })
+
+    return quiz.populate('createdBy')
   }
 
-  async findOneById(id: Quiz['id']): Promise<Quiz> {
-    return await this.quizRepository.findOneById(id)
+  async findOneById(id: string): Promise<Quiz> {
+    return this.quizModel.findById(id)
   }
 }

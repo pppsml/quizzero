@@ -1,16 +1,17 @@
 import { Module } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { MongooseModule } from '@nestjs/mongoose';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { GraphQLModule } from '@nestjs/graphql';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
 import { join } from 'path';
 
-import { PrismaModule } from './prisma/prisma.module';
 import { UserModule } from './user/user.module';
 import { IContext } from './types/context';
 import { QuizModule } from './quiz/quiz.module';
+// import { UserActiveSessionModule } from './userActiveSession/userActiveSession.module';
 import { ConfigServiceVariables } from './config/configService.config';
 
 console.log(process.cwd() + '/templates/');
@@ -20,6 +21,14 @@ console.log(process.cwd() + '/templates/');
       envFilePath: `.env.development.local`,
       isGlobal: true,
     }),
+    MongooseModule.forRootAsync({
+      useFactory: async (configService: ConfigService<ConfigServiceVariables>) => {
+        return {
+          uri: configService.get('MONGODB_URI')
+        }
+      },
+      inject: [ConfigService],
+    }),
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
       playground: {
@@ -28,7 +37,7 @@ console.log(process.cwd() + '/templates/');
         },
       },
       buildSchemaOptions: {
-        dateScalarMode: 'isoDate',
+        dateScalarMode: 'timestamp',
       },
       autoSchemaFile: true,
       context: async ({ req, res }: { req: Request; res: Response }) =>
@@ -63,9 +72,9 @@ console.log(process.cwd() + '/templates/');
         },
       })
     }),
-    PrismaModule,
     UserModule,
     QuizModule,
+    // UserActiveSessionModule,
   ],
   controllers: [],
   providers: [],
