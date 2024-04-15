@@ -3,7 +3,7 @@
   "private": true,
   "scripts": {
     "build": "turbo build",
-    "dev": "turbo dev --filter=backend",
+    "dev": "turbo dev --filter=backend --filter=frontend",
     "lint": "turbo lint",
     "db:push": "turbo db:push",
     "format": "prettier --write \"**/*.{ts,tsx,md}\""

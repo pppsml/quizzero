@@ -6,10 +6,6 @@ import { User, UserSchema } from './user.schema';
 import { UserResolver } from './user.resolver';
 import { UserService } from "./user.service";
 
-import { MailerModule } from "src/mailer/mailer.module";
-// import { VerificationCodeModule } from "src/verificationCode/verificationCode.module";
-// import { UserActiveSessionModule } from "src/userActiveSession/userActiveSession.module";
-
 
 @Module({
   imports: [
@@ -31,9 +27,6 @@ import { MailerModule } from "src/mailer/mailer.module";
         },
       },
     ]),
-    MailerModule,
-    // VerificationCodeModule,
-    // UserActiveSessionModule,
   ],
   providers: [
     UserResolver,

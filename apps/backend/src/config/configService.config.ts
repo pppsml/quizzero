@@ -1,3 +1,5 @@
+import { ConfigModuleOptions } from "@nestjs/config";
+
 export interface ConfigServiceVariables {
   PORT: number;
 
@@ -20,3 +22,8 @@ export interface ConfigServiceVariables {
   NODEMAILER_TRANSPORT_HOST: string;
   NODEMAILER_TRANSPORT_PORT: number;
 }
+
+export const getConfigModuleOptions = (): ConfigModuleOptions => ({
+  envFilePath: `.env.development.local`,
+  isGlobal: true,
+})
