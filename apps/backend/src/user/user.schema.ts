@@ -16,7 +16,7 @@ export class User implements IUser {
   _id: string;
 
   @Field(() => String)
-  @Prop({ type: () => String, index: 1 })
+  @Prop({ type: () => String, unique: true, index: 1, })
   email: string;
 
   @Prop({ type: () => String })

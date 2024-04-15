@@ -12,8 +12,6 @@ import { compareSync, hashSync } from 'bcrypt';
 import { User } from './user.schema'
 import { CreateUserInput } from './dto/createUser.input';
 
-import { MailerService } from 'src/mailer/mailer.service';
-
 import { ConfigServiceVariables } from 'src/config/configService.config';
 
 @Injectable()
@@ -21,7 +19,6 @@ export class UserService {
   constructor(
     @InjectModel(User.name)
     private readonly userModel: Model<User>,
-    private readonly mailerService: MailerService,
     private readonly configService: ConfigService<ConfigServiceVariables>,
   ) {}
 

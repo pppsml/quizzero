@@ -1,5 +1,6 @@
 import Image from 'next/image'
 import styles from './page.module.css'
+import getGoogleOAuthURL from '@/utils/getGoogleOAuthUrI'
 
 export default function Home() {
   return (
@@ -37,6 +38,10 @@ export default function Home() {
           height={37}
           priority
         />
+      </div>
+
+      <div>
+        <a href={getGoogleOAuthURL()}>login with google</a>
       </div>
 
       <div className={styles.grid}>
