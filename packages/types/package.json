@@ -1,22 +1,27 @@
 {
   "name": "@repo/types",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "private": true,
+  "exports": {
+    ".": {
+      "types": "./dist/types/index.d.ts",
+      "import": "./dist/esm/index.js",
+      "require": "./dist/cjs/index.js"
+    }
+  },
   "typesVersions": {
     "*": {
       "*": [
-        "./src/index.d.ts"
+        "./dist/types/*.d.ts"
       ]
     }
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "pnpm build:esm && pnpm build:cjs && pnpm build:types && pnpm postbuild",
+    "postbuild": "node postbuild.js",
+    "build:esm": "tsc --module NodeNext --outDir dist/esm --declaration false --declarationMap false",
+    "build:cjs": "tsc --module NodeNext --declaration false --declarationMap false --outDir dist/cjs",
+    "build:types": "tsc --emitDeclarationOnly --outDir dist/types"
   },
-  "keywords": [],
   "author": "",
-  "license": "ISC",
-  "devDependencies": {
-    "typescript": "^5.3.3"
-  }
+  "license": "ISC"
 }
