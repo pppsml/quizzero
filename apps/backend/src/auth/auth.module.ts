@@ -11,6 +11,8 @@ import { MailerModule } from "src/mailer/mailer.module";
 import { ProvidersModule } from "./providers/providers.module";
 import { GoogleProvider } from './providers/services/googleProvider'
 import { ConfigService } from "@nestjs/config";
+import { AuthService } from "./auth.service";
+import { AccountModule } from "src/account/account.module";
 
 
 @Module({
@@ -18,10 +20,11 @@ import { ConfigService } from "@nestjs/config";
     UserModule,
     MailerModule,
     SessionModule,
+    AccountModule,
     ProvidersModule.registerAsync({
       useFactory(configService: ConfigService<ConfigServiceVariables>) {
         return {
-          baseUri: 'http://localhost:5000',
+          baseUri: configService.get('OAUTH_REDIRECT_URI'),
           services: [
             new GoogleProvider({
               client_id: configService.get('GOOGLE_CLIENT_ID'),
@@ -37,6 +40,6 @@ import { ConfigService } from "@nestjs/config";
     }),
   ],
   controllers: [AuthController],
-  providers: [AuthResolver],
+  providers: [AuthResolver, AuthService],
 })
 export class AuthModule {}

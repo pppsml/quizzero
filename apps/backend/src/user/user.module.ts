@@ -16,6 +16,7 @@ import { UserService } from "./user.service";
           const schema = UserSchema
           schema.pre('save', function() {
             if (!this.isModified('password')) return;
+            if (!this.password) return;
 
             const saltRounds = 10
             const hash = hashSync(this.password, saltRounds)

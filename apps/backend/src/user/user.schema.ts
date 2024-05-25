@@ -1,6 +1,6 @@
 import { Field, ObjectType } from "@nestjs/graphql";
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
-import type { IUser } from '@repo/types'
+import { IUser, UserRoles } from '@repo/types'
 
 import { GraphQLObjectId } from "src/types/scalars/gqlObjectId";
 
@@ -25,10 +25,14 @@ export class User implements IUser {
   @Field(() => String)
   @Prop({ type: () => String })
   name: string;
-  
+
   @Field(() => String)
   @Prop({ type: () => String })
-  displayName: string;
+  image: string;
+
+  @Field(() => [String])
+  @Prop({ type: [String], enum: UserRoles, default: [UserRoles.USER] })
+  roles: UserRoles;
 
   @Field(() => Date)
   createdAt: Date;

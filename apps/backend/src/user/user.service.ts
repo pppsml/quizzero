@@ -22,8 +22,14 @@ export class UserService {
     private readonly configService: ConfigService<ConfigServiceVariables>,
   ) {}
 
-  async getUserById(id: string): Promise<User> {
+  async getById(id: string): Promise<User> {
     return this.userModel.findById(id);
+  }
+
+  async getByEmail(email: string) {
+    return this.userModel.findOne({
+      email,
+    })
   }
 
   async createUser({ email, password, name }: CreateUserInput): Promise<User> {
@@ -43,22 +49,6 @@ export class UserService {
       displayName: name || email,
       password,
     });
-    // const verificationCode = await this.verificationCodeService.createOne(
-    //   user.id,
-    // );
-
-    // const hashedVerificationCode = this.getHash(
-    //   `${verificationCode}_${createUserInput.email}`,
-    // );
-
-    // const url = `${this.configService.get('FRONTEND_ENDPOIND_VERIFY')}?email=${
-    //   createUserInput.email
-    // }&token=${hashedVerificationCode}`;
-
-    // this.mailerService.sendConfirmationMail({
-    //   email: createUserInput.email,
-    //   url,
-    // });
 
     return user;
   }
@@ -99,37 +89,9 @@ export class UserService {
     return true
   }
 
-  // async verifyUser(email: User['email'], token: string): Promise<boolean> {
-  //   const user = await this.userRepository.findOneByEmail(email);
-  //   if (!user) {
-  //     throw new UnauthorizedException(
-  //       `User with email "${email}" does not exists`,
-  //     );
-  //   }
-
-  //   if (user.isVerified) {
-  //     throw new ConflictException(
-  //       'User already verified'
-  //     )
-  //   }
-
-  //   const verificationCode = await this.verificationCodeService.findOneByUserId(
-  //     user.id,
-  //   );
-  //   // todo check on token expire time
-  //   const tokenIsValid = compareSync(
-  //     `${verificationCode}_${user.email}`,
-  //     token,
-  //   );
-
-  //   if (!tokenIsValid) return false
-
-  //   await this.userRepository.updateOne(user.id, {
-  //     isVerified: true,
-  //   })
-
-  //   await this.verificationCodeService.deleteOneById(verificationCode.id)
-
-  //   return true;
-  // }
+  async updateOne(userId: string, data: Partial<Pick<User, 'image' | 'name'>>) {
+    return this.userModel.findOneAndUpdate({
+      _id: userId,
+    }, data)
+  }
 }
