@@ -1,8 +1,11 @@
 import { Args, Context, Mutation, Query, Resolver } from "@nestjs/graphql";
 
 import { MailerService } from "src/mailer/mailer.service";
-import { SessionService, DeleteSessionDto } from "src/session";
-import { User, CreateUserInput, UserService } from "src/user"
+import { SessionService } from "src/session/session.service";
+import { DeleteSessionDto } from "src/session/dto/delete-session.dto";
+import { User } from "src/user/user.schema"
+import { UserService } from "src/user/user.service"
+import { CreateUserInput } from "src/user/dto/create-user.dto"
 
 import { ProvidersService } from "./providers/provides.service";
 
@@ -34,7 +37,7 @@ export class AuthResolver {
     if (!userId) return null
     const reqSession = context.req.session
 
-    const user = await this.userService.getUserById(userId)
+    const user = await this.userService.getById(userId)
 
     const mongoSession = await this.sessionService.touch(reqSession.id, reqSession)
 

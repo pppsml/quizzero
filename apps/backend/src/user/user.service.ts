@@ -10,7 +10,7 @@ import { Model } from 'mongoose';
 import { compareSync, hashSync } from 'bcrypt';
 
 import { User } from './user.schema'
-import { CreateUserInput } from './dto/createUser.input';
+import { CreateUserInput } from './dto/create-user.dto'
 
 import { ConfigServiceVariables } from 'src/config/configService.config';
 

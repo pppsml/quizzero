@@ -30,7 +30,7 @@ export class QuizResolver {
   ) {
     if (!sessionUser) throw new UnauthorizedException('You must log in')
 
-    const user = await this.userService.getUserById(sessionUser._id)
+    const user = await this.userService.getById(sessionUser._id)
     if (!user) throw new ConflictException('User does not exists')
 
     return await this.quizService.createQuiz(createQuizInput, user._id);

@@ -5,7 +5,7 @@ import { Request } from 'express';
 
 import { UserService } from './user.service';
 import { User } from './user.schema';
-import { CreateUserInput } from './dto/createUser.input';
+import { CreateUserInput } from './dto/create-user.dto';
 
 import { IContext } from '../types';
 import { ConfigServiceVariables } from '../config/configService.config';
@@ -26,7 +26,7 @@ export class UserResolver {
 
   @Query(() => User, { nullable: true, })
   async getUserById(@Args('id') id: string) {
-    return await this.userService.getUserById(id);
+    return await this.userService.getById(id);
   }
 
   // @Query(() => Boolean)
