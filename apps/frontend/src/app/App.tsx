@@ -1,11 +1,15 @@
 import { Paper } from '@mantine/core'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import { lazily } from 'react-lazily'
 
 import { ApolloProvider, MantineProvider, withProviders } from './providers'
 
-import { AuthCallbackPage } from '../pages/AuthCallback'
-import { HomePage } from '../pages/Home'
-import { MainLayout } from '@/shared/ui/layouts/MainLayout/index'
+      import { MainLayout } from '@/shared/ui/layouts/MainLayout/index'
+
+const {
+  AuthCallbackPage,
+  HomePage
+} = lazily(() => import('@/pages'))
 
 const App = () => {
   return (

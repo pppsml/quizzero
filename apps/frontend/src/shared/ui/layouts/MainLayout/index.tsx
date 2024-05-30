@@ -10,8 +10,8 @@ export const MainLayout = () => {
   return (
     <div className={classes.layout}>
       <Header />
-      <main>
-        <Container>
+      <main className={classes.main__content}>
+        <Container size='xl'>
           <Suspense >
             <Outlet />
           </Suspense>

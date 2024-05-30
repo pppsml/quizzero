@@ -1,6 +1,10 @@
+
 .footer {
-  margin-top: rem(120px);
-  border-top: rem(1px) solid light-dark(var(--mantine-color-gray-2), var(--mantine-color-dark-5));
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: var(--footer-height);
 }
 
 .inner {
@@ -19,4 +23,9 @@
   @media(max-width: $mantine-breakpoint-xs) {
     margin-top: var(--mantine-spacing-md);
   }
+}
+
+.footer__spacer {
+  height: var(--footer-height);
+  width: 100%;
 }
