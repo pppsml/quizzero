@@ -1,4 +1,4 @@
-import { Injectable, OnModuleInit } from "@nestjs/common";
+import { Injectable, Logger, OnModuleInit } from "@nestjs/common";
 import { SessionData } from "express-session";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model, ObjectId } from "mongoose";
@@ -16,12 +16,12 @@ export class SessionService implements OnModuleInit {
     private readonly sessionModel: Model<Session>,
   ) {}
 
+  private readonly logger = new Logger(SessionService.name)
   private interval: NodeJS.Timeout | null
   private readonly intevalTime = 1000 * 60 * 5 // 5 min
   // private readonly intevalTime = 1000 * 5 // 5 sec
 
   onModuleInit() {
-    console.log('session service init')
     this.startInterval()
   }
 
@@ -41,19 +41,25 @@ export class SessionService implements OnModuleInit {
   }
 
   private async prune() {
-    console.log('prune', new Date().toLocaleTimeString())
-
     const sessions = await this.sessionModel.find()
-    if (!sessions.length) return
+    if (!sessions.length) {
+      this.logger.log(`Prune at ${new Date().toLocaleTimeString()}. Deleted 0 sessions.`)
+      return
+    }
 
+    let deletedCount = 0
     sessions.forEach(async session => {
       const { sid, expiresAt } = session
       if ((new Date(expiresAt)).valueOf() < Date.now()) {
-        console.log(`Deleting session "${sid}"`)
         const foundSession = await this.getOneBySId(sid)
-        if (foundSession) await this.deleteOne({ sid })
+        if (foundSession) {
+          await this.deleteOne({ sid })
+          deletedCount += 1
+        }
       }
-    });
+    })
+
+    this.logger.log(`Prune at ${new Date().toLocaleTimeString()}. Deleted ${deletedCount} sessions.`)
   }
 
 
