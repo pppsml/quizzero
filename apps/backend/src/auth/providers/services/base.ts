@@ -98,7 +98,7 @@ export class BaseService {
   }
 
   getRedirectUri() {
-    return `${this._baseUri}${this.opts.name}`;
+    return `${this._baseUri}/${this.opts.name}`;
   }
 
   set baseUri(value: string) {

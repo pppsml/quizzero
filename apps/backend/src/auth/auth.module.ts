@@ -1,7 +1,6 @@
 import { Module } from "@nestjs/common";
 
 import { AuthResolver } from "./auth.resolver";
-import { AuthController } from "./auth.controller";
 
 import { ConfigServiceVariables } from "src/config";
 import { SessionModule } from "src/session/session.module";
@@ -39,7 +38,6 @@ import { AccountModule } from "src/account/account.module";
       ]
     }),
   ],
-  controllers: [AuthController],
   providers: [AuthResolver, AuthService],
 })
 export class AuthModule {}

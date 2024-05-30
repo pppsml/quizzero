@@ -58,4 +58,8 @@ export class AuthService {
 
     return user
   }
+
+  getAuthUri(provider: AllowedProviders) {
+    return this.providersService.findService(provider).getAuthUri()
+  }
 }

@@ -1,4 +1,5 @@
 import { Args, Context, Mutation, Query, Resolver } from "@nestjs/graphql";
+import { AllowedProviders } from "@repo/types";
 
 import { MailerService } from "src/mailer/mailer.service";
 import { SessionService } from "src/session/session.service";
@@ -7,7 +8,7 @@ import { User } from "src/user/user.schema"
 import { UserService } from "src/user/user.service"
 import { CreateUserInput } from "src/user/dto/create-user.dto"
 
-import { ProvidersService } from "./providers/provides.service";
+import { AuthService } from "./auth.service";
 
 import { IContext } from "src/types";
 
@@ -16,9 +17,9 @@ import { IContext } from "src/types";
 export class AuthResolver {
   constructor(
     private readonly userService: UserService,
+    private readonly authService: AuthService,
     private readonly mailerService: MailerService,
     private readonly sessionService: SessionService,
-    private readonly providersService: ProvidersService,
   ) {}
 
   // TODO
@@ -42,7 +43,6 @@ export class AuthResolver {
     const mongoSession = await this.sessionService.touch(reqSession.id, reqSession)
 
     if (!mongoSession) {
-      //? fix
       reqSession.destroy((err) => console.log(err))
       return null
     }
@@ -50,22 +50,38 @@ export class AuthResolver {
     return user
   }
 
-  @Query(() => String, {})
+  @Query(() => String)
   async getAuthUri(
-    @Args('provider') provider: string,
+    @Args('provider') provider: AllowedProviders,
   ) {
-    return this.providersService.findService(provider).getAuthUri()
+    return this.authService.getAuthUri(provider)
   }
 
-  @Mutation(() => Boolean)
-  async deleteSession(@Args('DeleteSessionDto') deleteSessionDto: DeleteSessionDto) {
-    return this.sessionService.deleteOne(deleteSessionDto)
+  @Query(() => User, { nullable: true })
+  async providerCallback(
+    @Args('code') code: string,
+    @Args('provider') provider: AllowedProviders, 
+    @Context() context: IContext,
+  ) {
+    const user = await this.authService.extractUserByCode(code, provider)
+
+    await this.sessionService.createOne({
+      sid: context.req.sessionID,
+      userId: user._id,
+      expiresAt: context.req.session.cookie.expires,
+      data: user,
+    })
+
+    context.req.session.save()
+
+    return user
   }
 
   @Mutation(() => User)
   async registration(@Args('createUserInput') input: CreateUserInput): Promise<User> {
     return await this.userService.createUser(input)
   }
+
 
   @Mutation(() => User, { nullable: true })
   async login(
