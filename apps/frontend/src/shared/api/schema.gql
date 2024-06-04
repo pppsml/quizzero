@@ -1,0 +1,11 @@
+query GetMe {
+  getMe {
+    _id
+    email
+    name
+  }
+}
+
+query GetAuthUri($provider: String!) {
+  getAuthUri(provider: $provider)
+}

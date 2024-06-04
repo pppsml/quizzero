@@ -1,0 +1,29 @@
+# schema: http://localhost:5000/graphql
+schema: http://127.0.0.1:5000/graphql
+documents: src/**/*.{gql,graphql}
+config:
+  # Сгенерированные файлы напрямую менять нельзя (!), только через обертки / доп. файлы
+  content: ${API_GENCOMMENT}
+  # Работа с запросами ведется через react-hooks
+  withHooks: true
+  # Из типов для схемы исключается служебное поле __typename
+  skipTypename: true
+  # # Все типы из схемы и запросов - иммутабельны
+  # immutableTypes: true
+  # Типы генерируются на лету, без Pick - для чистоты информации по типу
+  preResolveTypes: true
+generates:
+  src/shared/api/models.gen.ts:
+    plugins:
+      - add
+      - typescript
+  src/:
+    preset: near-operation-file
+    # Типы схемы и запросы - разделены
+    presetConfig:
+      extension: .gen.ts
+      baseTypesPath: shared/api/models.gen.ts
+    plugins:
+      - add
+      - typescript-operations
+      - typescript-react-apollo
