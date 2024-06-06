@@ -1,33 +1,34 @@
-import { useQuery, gql } from '@apollo/client'
 import { useParams, useSearchParams } from 'react-router-dom'
+
+import { useProviderCallbackQuery } from '@/shared/api/schema.gen'
 
 export const AuthCallbackPage = () => {
   const  { provider } = useParams()
   const [ searchParams ] = useSearchParams()
   const code = searchParams.get('code')
 
-  const { data, error, loading } = useQuery(gql`
-    query providerCallback($provider: String!, $code: String!) {
-      providerCallback(provider: $provider, code: $code) {
-        _id
-        email
-      }
-    }
-  `, {
+  if (!code || !provider) {
+    return (
+      <>
+        <p>no code or provider</p>
+      </>
+    )
+  }
+
+  const { data, loading, error } = useProviderCallbackQuery({
     variables: {
       code,
       provider,
     }
   })
 
-  console.log('code', code)
-  console.log('provider', provider)
-  console.log('data', data)
-  console.log('error', error?.message)
-  console.log('loading', loading)
   return (
     <>
-      AuthCallback
+      <p>code: {code}</p>
+      <p>provider: {provider}</p>
+      <p>data: {JSON.stringify(data) ||  'null'}</p>
+      <p>error: {error?.message || 'null'}</p>
+      <p>loading: {loading.toString()}</p>
     </>
   )
 }

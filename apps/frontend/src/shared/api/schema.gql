@@ -9,3 +9,11 @@ query GetMe {
 query GetAuthUri($provider: String!) {
   getAuthUri(provider: $provider)
 }
+
+query ProviderCallback($provider: String!, $code: String!) {
+  providerCallback(provider: $provider, code: $code) {
+    _id
+    email
+    name
+  }
+}

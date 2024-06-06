@@ -11,8 +11,10 @@
 
 .main__content {
   position: relative;
+  height: 100%;
 
-  padding-left: var(--aboba);
+  padding-top: calc(var(--header-height) + rem(24));
+  padding-bottom: rem(24);
 
   z-index: 1;
 }
