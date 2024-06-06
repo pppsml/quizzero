@@ -1,10 +1,11 @@
 import { NestFactory } from '@nestjs/core';
+import { ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import 'dotenv/config'
 import * as session from 'express-session'
 
 import { AppModule } from './app.module';
 import { ConfigServiceVariables } from './config/configService.config';
-import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);

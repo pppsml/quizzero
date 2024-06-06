@@ -2,10 +2,9 @@
   "name": "quiz-gql",
   "private": true,
   "scripts": {
-    "build": "turbo build",
-    "dev": "turbo dev --filter=backend --filter=frontend",
+    "build": "dotenv -e .env -e .env.local -e env.production -e .env.production.local -- turbo build",
+    "dev": "dotenv -e .env -e .env.local -e env.development -e .env.development.local -- turbo dev --filter=backend --filter=frontend",
     "lint": "turbo lint",
-    "db:push": "turbo db:push",
     "format": "prettier --write \"**/*.{ts,tsx,md}\""
   },
   "devDependencies": {
@@ -17,5 +16,8 @@
   "packageManager": "pnpm@8.9.0",
   "engines": {
     "node": ">=18"
+  },
+  "dependencies": {
+    "dotenv-cli": "^7.4.2"
   }
 }
