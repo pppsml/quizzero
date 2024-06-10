@@ -3,7 +3,7 @@
   "private": true,
   "scripts": {
     "build": "dotenv -e .env -e .env.local -e env.production -e .env.production.local -- turbo build",
-    "dev": "dotenv -e .env -e .env.local -e env.development -e .env.development.local -- turbo dev --filter=backend --filter=frontend",
+    "dev": "dotenv -e .env -e .env.local -e .env.development -e .env.development.local -- turbo dev --filter=backend --filter=frontend",
     "lint": "turbo lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\""
   },

@@ -175,6 +175,9 @@ importers:
       '@mantine/hooks':
         specifier: ^7.10.0
         version: 7.10.0(react@18.2.0)
+      '@repo/types':
+        specifier: workspace:*
+        version: link:../../packages/types
       apollo-upload-client:
         specifier: ^18.0.1
         version: 18.0.1(@apollo/client@3.10.4)(graphql@16.8.1)
@@ -306,7 +309,11 @@ importers:
         specifier: ^5.3.3
         version: 5.3.3
 
-  packages/types: {}
+  packages/types:
+    devDependencies:
+      typescript:
+        specifier: ^5.4.5
+        version: 5.4.5
 
   packages/typescript-config: {}
 
@@ -12328,6 +12335,12 @@ packages:
 
   /typescript@5.3.3:
     resolution: {integrity: sha512-pXWcraxM0uxAS+tN0AG/BF2TyqmHO014Z070UsJ+pFvYuRSq8KH8DmWpnbXe0pEPDHXZV3FcAbJkijJ5oNEnWw==}
+    engines: {node: '>=14.17'}
+    hasBin: true
+    dev: true
+
+  /typescript@5.4.5:
+    resolution: {integrity: sha512-vcI4UpRgg81oIRUFwR0WSIHKt11nJ7SAVlYNIu+QpqeyXP+gpQJy/Z4+F0aGxSE4MqwjyXvW/TzgkLAx2AGHwQ==}
     engines: {node: '>=14.17'}
     hasBin: true
     dev: true

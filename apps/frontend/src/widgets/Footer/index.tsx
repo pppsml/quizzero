@@ -1,7 +1,7 @@
 import { ActionIcon, Container, Group, rem } from "@mantine/core"
 
 import classes from './index.module.css'
-import { Logo } from "../Logo"
+import { Logo } from "../../shared/ui/Logo"
 import { IconBrandGithub } from "@tabler/icons-react"
 
 export const Footer = () => {
