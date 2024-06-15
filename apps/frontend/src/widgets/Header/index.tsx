@@ -1,16 +1,17 @@
+import { useMemo } from 'react'
 import { Burger, Container, Group } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 
 import { Logo } from "../../shared/ui/Logo";
 import classes from "./index.module.css";
+import { LoginButton } from "./LoginButton";
 import { UserButton } from "@/entities/user/ui/UserButton";
-import { LoginWithProviders } from "@/features/AuthModal/ui/LoginWithProviders";
 import { User } from "@/shared/api/models.gen";
 
 const randomUser = (): null | User => {
   const number = Math.random()
+  return null
   if (number > 0.5) {
-    return null
   } else {
     return {
       _id: '123',
@@ -19,7 +20,7 @@ const randomUser = (): null | User => {
       email: 'asd',
       image: '123',
       name: '123',
-      roles: ['USER']
+      roles: ['USER'],
     } as User
   }
 }
@@ -27,7 +28,7 @@ const randomUser = (): null | User => {
 export const Header = () => {
   const [opened, { toggle }] = useDisclosure(false);
 
-  const user = null
+  const user = useMemo(() => randomUser(), [])
 
   return (
     <header className={classes.header}>
@@ -38,7 +39,7 @@ export const Header = () => {
           {
             user 
               ? <UserButton user={user} />
-              : <LoginWithProviders />
+              : <LoginButton />
           }
         </Group>
       </Container>

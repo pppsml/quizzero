@@ -1,15 +1,22 @@
-import { FC } from 'react'
+import { ReactNode } from 'react'
 import { IconBrandGoogle } from '@tabler/icons-react'
 import { AllowedProviders } from '@repo/types'
 
 export interface Provider {
-  provider: AllowedProviders,
-  icon: FC
+  title: string;
+  name: AllowedProviders;
+  icon: ReactNode;
 }
 
 export const providers: Provider[] = [
   {
-    provider: AllowedProviders.GOOGLE,
-    icon: IconBrandGoogle,
+    title: 'Google',
+    name: AllowedProviders.GOOGLE,
+    icon: <IconBrandGoogle />,
   },
 ]
+
+export interface IForms {
+  Login: ReactNode;
+  Registration: ReactNode;
+}

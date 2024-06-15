@@ -24,19 +24,13 @@ import {
 import { IUser } from "@repo/types";
 
 import classes from './index.module.css'
+import { User } from "@/shared/api/models.gen";
 
 interface Props {
-  user: IUser;
+  user: User
 }
 
-const user = {
-  name: "Jane Spoonfighter",
-  email: "janspoon@fighter.dev",
-  image:
-    "https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/avatars/avatar-5.png",
-};
-
-export const UserButton = ({}: Props) => {
+export const UserButton = ({ user }: Props) => {
   const theme = useMantineTheme();
   const [userMenuOpened, setUserMenuOpened] = useState(false);
 
