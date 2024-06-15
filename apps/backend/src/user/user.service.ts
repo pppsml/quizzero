@@ -9,10 +9,11 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { compareSync, hashSync } from 'bcrypt';
 
-import { User } from './user.schema'
-import { CreateUserInput } from './dto/create-user.dto'
+import { User } from './user.schema';
+import { CreateUserInput } from './dto/create-user.dto';
 
 import { ConfigServiceVariables } from 'src/config/configService.config';
+import { LoginInput } from './dto/login.dto';
 
 @Injectable()
 export class UserService {
@@ -29,32 +30,30 @@ export class UserService {
   async getByEmail(email: string) {
     return this.userModel.findOne({
       email,
-    })
+    });
   }
 
-  async createUser({ email, password, name }: CreateUserInput): Promise<User> {
+  async createUser({ email, password, name, image }: CreateUserInput): Promise<User> {
     const existingUser = await this.userModel.findOne({
       email,
     });
 
     if (existingUser) {
-      throw new ConflictException(
-        `User with email "${email}" already exists`,
-      );
+      throw new ConflictException(`User with email "${email}" already exists`);
     }
 
     const user = await this.userModel.create({
       email,
-      name,
-      displayName: name || email,
+      name: name || email,
       password,
+      image,
     });
 
     return user;
   }
 
-  async login(email: User['email'], password: User['password']) {
-    const user = await this.userModel.findOne({ email })
+  async login({ email, password }: LoginInput) {
+    const user = await this.userModel.findOne({ email });
     if (!user) throw new UnauthorizedException('Uncorrect email');
 
     const passIsValid = compareSync(password, user.password);
@@ -82,16 +81,22 @@ export class UserService {
 
     const newPasswordHash = hashSync(newPassword, 10);
 
-    await this.userModel.updateOne({ _id: user._id }, {
-      password: newPasswordHash,
-    })
+    await this.userModel.updateOne(
+      { _id: user._id },
+      {
+        password: newPasswordHash,
+      },
+    );
 
-    return true
+    return true;
   }
 
   async updateOne(userId: string, data: Partial<Pick<User, 'image' | 'name'>>) {
-    return this.userModel.findOneAndUpdate({
-      _id: userId,
-    }, data)
+    return this.userModel.findOneAndUpdate(
+      {
+        _id: userId,
+      },
+      data,
+    );
   }
 }

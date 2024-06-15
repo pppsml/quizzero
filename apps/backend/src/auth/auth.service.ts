@@ -23,17 +23,13 @@ export class AuthService {
 
     let user = account?.userId
       ? await this.userService.getById(account.userId)
-      : null
+      : (await this.userService.getByEmail(profile.email)) || null
 
     if (user && account) {
       return this.userService.updateOne(user._id, {
         name: profile.name,
         image: profile.avatarUrl,
       })
-    }
-
-    if (!user) {
-      user = await this.userService.getByEmail(profile.email)
     }
 
     if (!user) {

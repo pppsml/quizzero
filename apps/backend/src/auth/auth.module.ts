@@ -1,23 +1,26 @@
+import { ConfigService } from "@nestjs/config";
 import { Module } from "@nestjs/common";
 
 import { AuthResolver } from "./auth.resolver";
 
 import { ConfigServiceVariables } from "src/config";
+
 import { SessionModule } from "src/session/session.module";
 import { UserModule } from "src/user/user.module";
 import { MailerModule } from "src/mailer/mailer.module";
-
 import { ProvidersModule } from "./providers/providers.module";
-import { GoogleProvider } from './providers/services/googleProvider'
-import { ConfigService } from "@nestjs/config";
-import { AuthService } from "./auth.service";
+import { VerificationCodeModule } from "src/verificationCode/verificationCode.module";
 import { AccountModule } from "src/account/account.module";
+
+import { GoogleProvider } from './providers/services/googleProvider'
+import { AuthService } from "./auth.service";
 
 
 @Module({
   imports: [
     UserModule,
     MailerModule,
+    VerificationCodeModule,
     SessionModule,
     AccountModule,
     ProvidersModule.registerAsync({

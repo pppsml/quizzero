@@ -3,14 +3,15 @@ import { AllowedProviders } from "@repo/types";
 
 import { MailerService } from "src/mailer/mailer.service";
 import { SessionService } from "src/session/session.service";
-import { DeleteSessionDto } from "src/session/dto/delete-session.dto";
 import { User } from "src/user/user.schema"
 import { UserService } from "src/user/user.service"
-import { CreateUserInput } from "src/user/dto/create-user.dto"
+import { VerificationCodeService } from "src/verificationCode/verificationCode.service";
 
 import { AuthService } from "./auth.service";
 
 import { IContext } from "src/types";
+import { CreateUserInput } from "src/user/dto/create-user.dto"
+import { LoginInput } from "../user/dto/login.dto";
 
 
 @Resolver()
@@ -19,16 +20,9 @@ export class AuthResolver {
     private readonly userService: UserService,
     private readonly authService: AuthService,
     private readonly mailerService: MailerService,
+    private readonly verificationCodeService: VerificationCodeService,
     private readonly sessionService: SessionService,
   ) {}
-
-  // TODO
-  // getMe + touch session +
-  // registration +
-  // login + session create +
-  // logout + session delete +
-  // verification code
-  //
 
   @Query(() => User, { nullable: true })
   async getMe(
@@ -77,24 +71,38 @@ export class AuthResolver {
     return user
   }
 
+  @Query(() => String)
+  async getEmailConfirmationMail(@Args('email') email: string) {
+    const code = await this.verificationCodeService.createOne(email, 'email')
+    if (!code) return 'The code has already been sent'
+
+    const emailRes = await this.mailerService.sendConfirmationMail(email, code.code)
+    if (!emailRes) return ''
+
+    return ''
+  }
+
   @Mutation(() => User)
-  async registration(@Args('createUserInput') input: CreateUserInput): Promise<User> {
+  async registerUser(@Args('createUserInput') input: CreateUserInput): Promise<User> {
     return await this.userService.createUser(input)
   }
 
 
-  @Mutation(() => User, { nullable: true })
+  @Mutation(() => User)
   async login(
-    @Args('email') email: string,
-    @Args('password') password: string,
+    @Args('loginInput') input: LoginInput,
     @Context() context: IContext
-  ): Promise<User | null> {
+  ): Promise<User> {
     try {
-      const user = await this.userService.login(email, password)
       const session = context.req.session
-
-      if (session.user) return user
+      if (session.user) {
+        return this.userService.getById(session.user._id)
+      }
       
+      const user = await this.userService.login(input)
+      
+      if (!input.rememberMe) return user
+
       session.user = { _id: user._id }
 
       const data = JSON.stringify(session)
@@ -109,7 +117,7 @@ export class AuthResolver {
       return user
     } catch (error) {
       console.log(error)
-      return null
+      return error
     }
   }
 

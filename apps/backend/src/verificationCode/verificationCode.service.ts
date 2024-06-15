@@ -8,6 +8,8 @@ import { randomNumber } from 'src/utils/random'
 
 @Injectable()
 export class VerificationCodeService {
+  private readonly ttl: number = 1000 * 60 * 15 // 15mins
+
   constructor(
     @InjectModel(VerificationCode.name)
     private readonly verificationCodeModel: Model<VerificationCode>
@@ -33,14 +35,24 @@ export class VerificationCodeService {
     return code
   }
 
-  async createOne(email: User['email']): Promise<VerificationCode> {
-    const code = this.generateCode()
+  async createOne(email: User['email'], type: string): Promise<VerificationCode> {
+    const existCode = await this.verificationCodeModel.findOne({
+      email,
+      type,
+    })
 
-    await this.verificationCodeModel.deleteMany({ email })
+    if (Date.now() - existCode.createdAt.getTime() > this.ttl) {
+      return null
+    }
+    
+    await this.verificationCodeModel.deleteMany({ email, type })
+    
+    const code = this.generateCode()
   
     return await this.verificationCodeModel.create({
       code,
       email,
+      type,
     })
   }
 

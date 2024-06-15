@@ -1,7 +1,6 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { IVerificationCode } from '@repo/types'
 
-
 @Schema({
   timestamps: {
     createdAt: true,
@@ -16,6 +15,9 @@ export class VerificationCode implements IVerificationCode {
 
   @Prop({ type: () => String })
   email: string;
+
+  @Prop({ type: () => String })
+  type: string;
 
   createdAt: Date;
 }
