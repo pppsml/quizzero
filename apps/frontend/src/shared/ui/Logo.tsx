@@ -9,7 +9,7 @@ export const Logo = () => {
 
   return (
     <Link to='/' style={{ textDecoration: 'none', }}>
-      <Flex align='baseline' mb={-6}>
+      <Flex align='baseline' mb={-4}>
         <img 
           width={18}
           src={icon} 

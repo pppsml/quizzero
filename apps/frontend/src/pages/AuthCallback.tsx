@@ -1,34 +1,39 @@
+import { useEffect } from 'react'
 import { useParams, useSearchParams } from 'react-router-dom'
 
-import { useProviderCallbackQuery } from '@/shared/api/schema.gen'
+import { useProviderCallbackLazyQuery, useProviderCallbackQuery } from '@/shared/api/schema.gen'
+import { LoadingOverlay } from '@mantine/core'
 
 export const AuthCallbackPage = () => {
+  const [sendProviderCallback] = useProviderCallbackLazyQuery()
   const  { provider } = useParams()
   const [ searchParams ] = useSearchParams()
   const code = searchParams.get('code')
 
-  if (!code || !provider) {
-    return (
-      <>
-        <p>no code or provider</p>
-      </>
-    )
+  const closeWindow = () => {
+    window.close()
   }
 
-  const { data, loading, error } = useProviderCallbackQuery({
-    variables: {
-      code,
-      provider,
+  useEffect(() => {
+    if (!code || !provider) {
+      closeWindow()
+      return
     }
-  })
+
+    sendProviderCallback({
+      variables: {
+        provider,
+        code,
+      }
+    }).then(({ data }) => {
+    localStorage.setItem('user', JSON.stringify(data?.providerCallback))
+
+    closeWindow()
+    })
+  }, [])
+
 
   return (
-    <>
-      <p>code: {code}</p>
-      <p>provider: {provider}</p>
-      <p>data: {JSON.stringify(data) ||  'null'}</p>
-      <p>error: {error?.message || 'null'}</p>
-      <p>loading: {loading.toString()}</p>
-    </>
+    <LoadingOverlay visible />
   )
 }

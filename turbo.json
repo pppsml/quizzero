@@ -1,14 +1,10 @@
 {
   "$schema": "https://turbo.build/schema.json",
-  "globalDotEnv": [".env.development.local"],
-  "globalEnv": [".env.development.local"],
-  "globalDependencies": [".env.development.local"],
   "pipeline": {
     "build": {
       "dependsOn": ["^build"],
       "outputs": [".next/**", "!.next/cache/**"],
       "dotEnv": [".env.development.local", ".env.development", ".env.local", ".env"],
-      "env": ["MY_API_URL", "MY_API_KEY"],
       "inputs": [
         "$TURBO_DEFAULT$",
         ".env.production.local",
@@ -24,7 +20,6 @@
       "cache": false,
       "persistent": true,
       "dotEnv": [".env.development.local", ".env.development", ".env.local", ".env"],
-      "env": ["MONGODB_URI", "MY_API_KEY"],
       "inputs": [
         "$TURBO_DEFAULT$",
         ".env.development.local",

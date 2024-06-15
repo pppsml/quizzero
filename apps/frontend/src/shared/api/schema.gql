@@ -1,8 +1,12 @@
+fragment UserData on User {
+  _id
+  name
+  email
+}
+
 query GetMe {
   getMe {
-    _id
-    email
-    name
+    ...UserData
   }
 }
 
@@ -15,5 +19,35 @@ query ProviderCallback($provider: String!, $code: String!) {
     _id
     email
     name
+  }
+}
+
+query UserWithEmailIsExists($email: String!) {
+  userWithEmailIsExists(email: $email)
+}
+
+query GetEmailConfirmationEmail($email: String!) {
+  getEmailConfirmationEmail(email: $email)
+}
+
+query GetUserById($id: String!) {
+  getUserById(id: $id) {
+    _id
+    name
+    email
+  }
+}
+
+mutation RegisterUser($createUserInput: CreateUserInput!) {
+  registerUser(createUserInput: $createUserInput) {
+    _id
+    name
+    email
+  }
+}
+
+mutation Login($loginInput: LoginInput!) {
+	login(loginInput: $loginInput) {
+		...UserData
   }
 }

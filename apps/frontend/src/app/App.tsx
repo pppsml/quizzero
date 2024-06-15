@@ -15,11 +15,11 @@ const App = () => {
         <Routes>
           <Route path="/" element={<MainLayout />}>
             <Route path="/" element={<HomePage />} />
-            <Route
-              path="/auth/callback/:provider"
-              element={<AuthCallbackPage />}
-            />
           </Route>
+          <Route
+            path="/auth/callback/:provider"
+            element={<AuthCallbackPage />}
+          />
         </Routes>
       </BrowserRouter>
     </Paper>

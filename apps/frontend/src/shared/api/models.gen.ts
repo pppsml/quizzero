@@ -22,39 +22,45 @@ export type CreateUserInput = {
   password: Scalars['String']['input'];
 };
 
-export type Mutation = {
-  createUser: User;
-  login?: Maybe<User>;
-  logout: Scalars['Boolean']['output'];
-  registration: User;
+export type LoginInput = {
+  email: Scalars['String']['input'];
+  password: Scalars['String']['input'];
+  rememberMe: Scalars['Boolean']['input'];
 };
 
-
-export type MutationCreateUserArgs = {
-  createUserInput: CreateUserInput;
+export type Mutation = {
+  login: User;
+  logout: Scalars['Boolean']['output'];
+  registerUser: User;
 };
 
 
 export type MutationLoginArgs = {
-  email: Scalars['String']['input'];
-  password: Scalars['String']['input'];
+  loginInput: LoginInput;
 };
 
 
-export type MutationRegistrationArgs = {
+export type MutationRegisterUserArgs = {
   createUserInput: CreateUserInput;
 };
 
 export type Query = {
   getAuthUri: Scalars['String']['output'];
+  getEmailConfirmationEmail: Scalars['String']['output'];
   getMe?: Maybe<User>;
   getUserById?: Maybe<User>;
   providerCallback?: Maybe<User>;
+  userWithEmailIsExists: Scalars['Boolean']['output'];
 };
 
 
 export type QueryGetAuthUriArgs = {
   provider: Scalars['String']['input'];
+};
+
+
+export type QueryGetEmailConfirmationEmailArgs = {
+  email: Scalars['String']['input'];
 };
 
 
@@ -66,6 +72,11 @@ export type QueryGetUserByIdArgs = {
 export type QueryProviderCallbackArgs = {
   code: Scalars['String']['input'];
   provider: Scalars['String']['input'];
+};
+
+
+export type QueryUserWithEmailIsExistsArgs = {
+  email: Scalars['String']['input'];
 };
 
 export type User = {
