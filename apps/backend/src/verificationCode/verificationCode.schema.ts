@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
-import { IVerificationCode } from '@repo/types'
+import { IVerificationCode, VerificationCodeTypes } from '@repo/types'
 
 @Schema({
   timestamps: {
@@ -16,8 +16,8 @@ export class VerificationCode implements IVerificationCode {
   @Prop({ type: () => String })
   email: string;
 
-  @Prop({ type: () => String })
-  type: string;
+  @Prop({ type: () => String, enum: VerificationCodeTypes })
+  type: VerificationCodeTypes;
 
   createdAt: Date;
 }

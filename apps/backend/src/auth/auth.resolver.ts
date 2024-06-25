@@ -1,5 +1,5 @@
 import { Args, Context, Mutation, Query, Resolver } from "@nestjs/graphql";
-import { AllowedProviders } from "@repo/types";
+import { AllowedProviders, VerificationCodeTypes } from "@repo/types";
 
 import { MailerService } from "src/mailer/mailer.service";
 import { SessionService } from "src/session/session.service";
@@ -12,6 +12,7 @@ import { AuthService } from "./auth.service";
 import { IContext } from "src/types";
 import { CreateUserInput } from "src/user/dto/create-user.dto"
 import { LoginInput } from "../user/dto/login.dto";
+import { BadRequestException, InternalServerErrorException } from "@nestjs/common";
 
 
 @Resolver()
@@ -71,15 +72,11 @@ export class AuthResolver {
     return user
   }
 
-  @Query(() => String)
+  @Query(() => Boolean)
   async getEmailConfirmationMail(@Args('email') email: string) {
-    const code = await this.verificationCodeService.createOne(email, 'email')
-    if (!code) return 'The code has already been sent'
+    const code = await this.verificationCodeService.createOne(email, VerificationCodeTypes.EMAIL)
 
-    const emailRes = await this.mailerService.sendConfirmationMail(email, code.code)
-    if (!emailRes) return ''
-
-    return ''
+    return this.mailerService.sendConfirmationMail(email, code.code)
   }
 
   @Mutation(() => User)

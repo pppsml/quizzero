@@ -1,10 +1,12 @@
-import { Injectable, UnauthorizedException } from "@nestjs/common";
+import { GoneException, Injectable, UnauthorizedException } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
+import { VerificationCodeTypes, CODE_LENGTH } from "@repo/types";
 
 import { VerificationCode } from "./verificationCode.schema";
 import { User } from "src/user/user.schema";
 import { randomNumber } from 'src/utils/random'
+import { VerifyCodeInput } from "./dto/verifyCode.dto";
 
 @Injectable()
 export class VerificationCodeService {
@@ -15,7 +17,7 @@ export class VerificationCodeService {
     private readonly verificationCodeModel: Model<VerificationCode>
   ) {}
 
-  private generateCode(length: number = 8) {
+  private generateCode(length: number = CODE_LENGTH) {
     const symbols = [
       // [ from char code, count ]
       [ 48, 9 ], // numbers
@@ -35,16 +37,7 @@ export class VerificationCodeService {
     return code
   }
 
-  async createOne(email: User['email'], type: string): Promise<VerificationCode> {
-    const existCode = await this.verificationCodeModel.findOne({
-      email,
-      type,
-    })
-
-    if (Date.now() - existCode.createdAt.getTime() > this.ttl) {
-      return null
-    }
-    
+  async createOne(email: User['email'], type: VerificationCodeTypes): Promise<VerificationCode> {  
     await this.verificationCodeModel.deleteMany({ email, type })
     
     const code = this.generateCode()
@@ -56,9 +49,14 @@ export class VerificationCodeService {
     })
   }
 
-  async verify(email: User['email'], code: VerificationCode['code']) {
-    const dbCode = await this.verificationCodeModel.findOne({ email })
-    if (!dbCode || dbCode.code !== code) throw new UnauthorizedException('Uncorrect code')
+  async verify({ code, email, type }: VerifyCodeInput) {
+    const dbCode = await this.verificationCodeModel.findOne({ email, code, type })
+    if (!dbCode) throw new UnauthorizedException('Uncorrect code')
+
+    if (dbCode.createdAt.getTime() + this.ttl < Date.now()) {
+      await dbCode.deleteOne()
+      throw new GoneException("Code expired")
+    }
 
     await dbCode.deleteOne()
 

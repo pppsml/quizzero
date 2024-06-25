@@ -19,7 +19,7 @@ export class UserResolver {
   }
 
   @Query(() => Boolean)
-  async userWithEmailIsExists(@Args('email') email: string) {
+  async userWithEmailExists(@Args('email') email: string) {
     return !!await this.userService.getByEmail(email)
   }
 }

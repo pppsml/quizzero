@@ -26,9 +26,9 @@ export class User implements IUser {
   @Prop({ type: () => String })
   name: string;
 
-  @Field(() => String)
+  @Field(() => String, { nullable: true })
   @Prop({ type: () => String })
-  image: string;
+  image: string | null;
 
   @Field(() => [String])
   @Prop({ type: [String], enum: UserRoles, default: [UserRoles.USER] })
@@ -37,7 +37,6 @@ export class User implements IUser {
   @Field(() => Date)
   createdAt: Date;
 
-  @Field(() => Date)
   updatedAt: Date;
 }
 
