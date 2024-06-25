@@ -1,7 +1,10 @@
 fragment UserData on User {
-  _id
+	_id
   name
   email
+  image
+  roles
+  createdAt
 }
 
 query GetMe {
@@ -16,38 +19,40 @@ query GetAuthUri($provider: String!) {
 
 query ProviderCallback($provider: String!, $code: String!) {
   providerCallback(provider: $provider, code: $code) {
-    _id
-    email
-    name
+    ...UserData
   }
 }
 
-query UserWithEmailIsExists($email: String!) {
-  userWithEmailIsExists(email: $email)
+query UserWithEmailExists($email: String!) {
+  userWithEmailExists(email: $email)
 }
 
-query GetEmailConfirmationEmail($email: String!) {
-  getEmailConfirmationEmail(email: $email)
+query GetEmailConfirmationMail($email: String!) {
+  getEmailConfirmationMail(email: $email)
 }
 
 query GetUserById($id: String!) {
   getUserById(id: $id) {
-    _id
-    name
-    email
+    ...UserData
   }
 }
 
-mutation RegisterUser($createUserInput: CreateUserInput!) {
-  registerUser(createUserInput: $createUserInput) {
-    _id
-    name
-    email
+mutation RegisterUser($input: CreateUserInput!) {
+  registerUser(createUserInput: $input) {
+    ...UserData
   }
 }
 
-mutation Login($loginInput: LoginInput!) {
-	login(loginInput: $loginInput) {
+mutation Login($input: LoginInput!) {
+	login(loginInput: $input) {
 		...UserData
   }
+}
+
+mutation Logout {
+  logout
+}
+
+mutation VerifyCode($input: VerifyCodeInput!) {
+  verifyCode(verifyCodeInput: $input)
 }

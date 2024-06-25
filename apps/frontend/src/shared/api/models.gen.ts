@@ -32,6 +32,7 @@ export type Mutation = {
   login: User;
   logout: Scalars['Boolean']['output'];
   registerUser: User;
+  verifyCode: Scalars['Boolean']['output'];
 };
 
 
@@ -44,13 +45,18 @@ export type MutationRegisterUserArgs = {
   createUserInput: CreateUserInput;
 };
 
+
+export type MutationVerifyCodeArgs = {
+  verifyCodeInput: VerifyCodeInput;
+};
+
 export type Query = {
   getAuthUri: Scalars['String']['output'];
-  getEmailConfirmationEmail: Scalars['String']['output'];
+  getEmailConfirmationMail: Scalars['Boolean']['output'];
   getMe?: Maybe<User>;
   getUserById?: Maybe<User>;
   providerCallback?: Maybe<User>;
-  userWithEmailIsExists: Scalars['Boolean']['output'];
+  userWithEmailExists: Scalars['Boolean']['output'];
 };
 
 
@@ -59,7 +65,7 @@ export type QueryGetAuthUriArgs = {
 };
 
 
-export type QueryGetEmailConfirmationEmailArgs = {
+export type QueryGetEmailConfirmationMailArgs = {
   email: Scalars['String']['input'];
 };
 
@@ -75,7 +81,7 @@ export type QueryProviderCallbackArgs = {
 };
 
 
-export type QueryUserWithEmailIsExistsArgs = {
+export type QueryUserWithEmailExistsArgs = {
   email: Scalars['String']['input'];
 };
 
@@ -83,8 +89,18 @@ export type User = {
   _id: Scalars['GraphQLObjectId']['output'];
   createdAt: Scalars['Timestamp']['output'];
   email: Scalars['String']['output'];
-  image: Scalars['String']['output'];
+  image?: Maybe<Scalars['String']['output']>;
   name: Scalars['String']['output'];
   roles: Array<Scalars['String']['output']>;
-  updatedAt: Scalars['Timestamp']['output'];
+};
+
+export enum VerificationCodeType {
+  Email = 'EMAIL',
+  PasswordReset = 'PASSWORD_RESET'
+}
+
+export type VerifyCodeInput = {
+  code: Scalars['String']['input'];
+  email: Scalars['String']['input'];
+  type: VerificationCodeType;
 };

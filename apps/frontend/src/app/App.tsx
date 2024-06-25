@@ -2,7 +2,7 @@ import { Paper } from "@mantine/core";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { lazily } from "react-lazily";
 
-import { ApolloProvider, MantineProvider, withProviders } from "./providers";
+import { ApolloProvider, MantineProvider, AuthProvider, withProviders } from "./providers";
 
 import { MainLayout } from "@/layouts/MainLayout/index";
 
@@ -26,4 +26,4 @@ const App = () => {
   );
 };
 
-export default withProviders(MantineProvider, ApolloProvider)(App);
+export default withProviders(MantineProvider, ApolloProvider, AuthProvider)(App);

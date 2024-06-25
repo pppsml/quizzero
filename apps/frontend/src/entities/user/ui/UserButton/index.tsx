@@ -21,16 +21,17 @@ import {
   IconSwitchHorizontal,
   IconTrash,
 } from "@tabler/icons-react";
-import { IUser } from "@repo/types";
 
-import classes from './index.module.css'
 import { User } from "@/shared/api/models.gen";
 
+import classes from "./index.module.css";
+
 interface Props {
-  user: User
+  user: User;
+  logoutHandler: () => void;
 }
 
-export const UserButton = ({ user }: Props) => {
+export const UserButton = ({ user, logoutHandler }: Props) => {
   const theme = useMantineTheme();
   const [userMenuOpened, setUserMenuOpened] = useState(false);
 
@@ -117,6 +118,7 @@ export const UserButton = ({ user }: Props) => {
           Change account
         </Menu.Item>
         <Menu.Item
+          onClick={logoutHandler}
           leftSection={
             <IconLogout
               style={{ width: rem(16), height: rem(16) }}

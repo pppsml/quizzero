@@ -3,12 +3,12 @@ import * as Types from './models.gen';
 import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
 const defaultOptions = {} as const;
-export type UserDataFragment = { _id: any, name: string, email: string };
+export type UserDataFragment = { _id: any, name: string, email: string, image?: string | null, roles: Array<string>, createdAt: any };
 
 export type GetMeQueryVariables = Types.Exact<{ [key: string]: never; }>;
 
 
-export type GetMeQuery = { getMe?: { _id: any, name: string, email: string } | null };
+export type GetMeQuery = { getMe?: { _id: any, name: string, email: string, image?: string | null, roles: Array<string>, createdAt: any } | null };
 
 export type GetAuthUriQueryVariables = Types.Exact<{
   provider: Types.Scalars['String']['input'];
@@ -23,48 +23,63 @@ export type ProviderCallbackQueryVariables = Types.Exact<{
 }>;
 
 
-export type ProviderCallbackQuery = { providerCallback?: { _id: any, email: string, name: string } | null };
+export type ProviderCallbackQuery = { providerCallback?: { _id: any, name: string, email: string, image?: string | null, roles: Array<string>, createdAt: any } | null };
 
-export type UserWithEmailIsExistsQueryVariables = Types.Exact<{
+export type UserWithEmailExistsQueryVariables = Types.Exact<{
   email: Types.Scalars['String']['input'];
 }>;
 
 
-export type UserWithEmailIsExistsQuery = { userWithEmailIsExists: boolean };
+export type UserWithEmailExistsQuery = { userWithEmailExists: boolean };
 
-export type GetEmailConfirmationEmailQueryVariables = Types.Exact<{
+export type GetEmailConfirmationMailQueryVariables = Types.Exact<{
   email: Types.Scalars['String']['input'];
 }>;
 
 
-export type GetEmailConfirmationEmailQuery = { getEmailConfirmationEmail: string };
+export type GetEmailConfirmationMailQuery = { getEmailConfirmationMail: boolean };
 
 export type GetUserByIdQueryVariables = Types.Exact<{
   id: Types.Scalars['String']['input'];
 }>;
 
 
-export type GetUserByIdQuery = { getUserById?: { _id: any, name: string, email: string } | null };
+export type GetUserByIdQuery = { getUserById?: { _id: any, name: string, email: string, image?: string | null, roles: Array<string>, createdAt: any } | null };
 
 export type RegisterUserMutationVariables = Types.Exact<{
-  createUserInput: Types.CreateUserInput;
+  input: Types.CreateUserInput;
 }>;
 
 
-export type RegisterUserMutation = { registerUser: { _id: any, name: string, email: string } };
+export type RegisterUserMutation = { registerUser: { _id: any, name: string, email: string, image?: string | null, roles: Array<string>, createdAt: any } };
 
 export type LoginMutationVariables = Types.Exact<{
-  loginInput: Types.LoginInput;
+  input: Types.LoginInput;
 }>;
 
 
-export type LoginMutation = { login: { _id: any, name: string, email: string } };
+export type LoginMutation = { login: { _id: any, name: string, email: string, image?: string | null, roles: Array<string>, createdAt: any } };
+
+export type LogoutMutationVariables = Types.Exact<{ [key: string]: never; }>;
+
+
+export type LogoutMutation = { logout: boolean };
+
+export type VerifyCodeMutationVariables = Types.Exact<{
+  input: Types.VerifyCodeInput;
+}>;
+
+
+export type VerifyCodeMutation = { verifyCode: boolean };
 
 export const UserDataFragmentDoc = gql`
     fragment UserData on User {
   _id
   name
   email
+  image
+  roles
+  createdAt
 }
     `;
 export const GetMeDocument = gql`
@@ -147,12 +162,10 @@ export type GetAuthUriQueryResult = Apollo.QueryResult<GetAuthUriQuery, GetAuthU
 export const ProviderCallbackDocument = gql`
     query ProviderCallback($provider: String!, $code: String!) {
   providerCallback(provider: $provider, code: $code) {
-    _id
-    email
-    name
+    ...UserData
   }
 }
-    `;
+    ${UserDataFragmentDoc}`;
 
 /**
  * __useProviderCallbackQuery__
@@ -187,91 +200,89 @@ export type ProviderCallbackQueryHookResult = ReturnType<typeof useProviderCallb
 export type ProviderCallbackLazyQueryHookResult = ReturnType<typeof useProviderCallbackLazyQuery>;
 export type ProviderCallbackSuspenseQueryHookResult = ReturnType<typeof useProviderCallbackSuspenseQuery>;
 export type ProviderCallbackQueryResult = Apollo.QueryResult<ProviderCallbackQuery, ProviderCallbackQueryVariables>;
-export const UserWithEmailIsExistsDocument = gql`
-    query UserWithEmailIsExists($email: String!) {
-  userWithEmailIsExists(email: $email)
+export const UserWithEmailExistsDocument = gql`
+    query UserWithEmailExists($email: String!) {
+  userWithEmailExists(email: $email)
 }
     `;
 
 /**
- * __useUserWithEmailIsExistsQuery__
+ * __useUserWithEmailExistsQuery__
  *
- * To run a query within a React component, call `useUserWithEmailIsExistsQuery` and pass it any options that fit your needs.
- * When your component renders, `useUserWithEmailIsExistsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useUserWithEmailExistsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useUserWithEmailExistsQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useUserWithEmailIsExistsQuery({
+ * const { data, loading, error } = useUserWithEmailExistsQuery({
  *   variables: {
  *      email: // value for 'email'
  *   },
  * });
  */
-export function useUserWithEmailIsExistsQuery(baseOptions: Apollo.QueryHookOptions<UserWithEmailIsExistsQuery, UserWithEmailIsExistsQueryVariables> & ({ variables: UserWithEmailIsExistsQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+export function useUserWithEmailExistsQuery(baseOptions: Apollo.QueryHookOptions<UserWithEmailExistsQuery, UserWithEmailExistsQueryVariables> & ({ variables: UserWithEmailExistsQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<UserWithEmailIsExistsQuery, UserWithEmailIsExistsQueryVariables>(UserWithEmailIsExistsDocument, options);
+        return Apollo.useQuery<UserWithEmailExistsQuery, UserWithEmailExistsQueryVariables>(UserWithEmailExistsDocument, options);
       }
-export function useUserWithEmailIsExistsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<UserWithEmailIsExistsQuery, UserWithEmailIsExistsQueryVariables>) {
+export function useUserWithEmailExistsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<UserWithEmailExistsQuery, UserWithEmailExistsQueryVariables>) {
           const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<UserWithEmailIsExistsQuery, UserWithEmailIsExistsQueryVariables>(UserWithEmailIsExistsDocument, options);
+          return Apollo.useLazyQuery<UserWithEmailExistsQuery, UserWithEmailExistsQueryVariables>(UserWithEmailExistsDocument, options);
         }
-export function useUserWithEmailIsExistsSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<UserWithEmailIsExistsQuery, UserWithEmailIsExistsQueryVariables>) {
+export function useUserWithEmailExistsSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<UserWithEmailExistsQuery, UserWithEmailExistsQueryVariables>) {
           const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useSuspenseQuery<UserWithEmailIsExistsQuery, UserWithEmailIsExistsQueryVariables>(UserWithEmailIsExistsDocument, options);
+          return Apollo.useSuspenseQuery<UserWithEmailExistsQuery, UserWithEmailExistsQueryVariables>(UserWithEmailExistsDocument, options);
         }
-export type UserWithEmailIsExistsQueryHookResult = ReturnType<typeof useUserWithEmailIsExistsQuery>;
-export type UserWithEmailIsExistsLazyQueryHookResult = ReturnType<typeof useUserWithEmailIsExistsLazyQuery>;
-export type UserWithEmailIsExistsSuspenseQueryHookResult = ReturnType<typeof useUserWithEmailIsExistsSuspenseQuery>;
-export type UserWithEmailIsExistsQueryResult = Apollo.QueryResult<UserWithEmailIsExistsQuery, UserWithEmailIsExistsQueryVariables>;
-export const GetEmailConfirmationEmailDocument = gql`
-    query GetEmailConfirmationEmail($email: String!) {
-  getEmailConfirmationEmail(email: $email)
+export type UserWithEmailExistsQueryHookResult = ReturnType<typeof useUserWithEmailExistsQuery>;
+export type UserWithEmailExistsLazyQueryHookResult = ReturnType<typeof useUserWithEmailExistsLazyQuery>;
+export type UserWithEmailExistsSuspenseQueryHookResult = ReturnType<typeof useUserWithEmailExistsSuspenseQuery>;
+export type UserWithEmailExistsQueryResult = Apollo.QueryResult<UserWithEmailExistsQuery, UserWithEmailExistsQueryVariables>;
+export const GetEmailConfirmationMailDocument = gql`
+    query GetEmailConfirmationMail($email: String!) {
+  getEmailConfirmationMail(email: $email)
 }
     `;
 
 /**
- * __useGetEmailConfirmationEmailQuery__
+ * __useGetEmailConfirmationMailQuery__
  *
- * To run a query within a React component, call `useGetEmailConfirmationEmailQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetEmailConfirmationEmailQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useGetEmailConfirmationMailQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetEmailConfirmationMailQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useGetEmailConfirmationEmailQuery({
+ * const { data, loading, error } = useGetEmailConfirmationMailQuery({
  *   variables: {
  *      email: // value for 'email'
  *   },
  * });
  */
-export function useGetEmailConfirmationEmailQuery(baseOptions: Apollo.QueryHookOptions<GetEmailConfirmationEmailQuery, GetEmailConfirmationEmailQueryVariables> & ({ variables: GetEmailConfirmationEmailQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+export function useGetEmailConfirmationMailQuery(baseOptions: Apollo.QueryHookOptions<GetEmailConfirmationMailQuery, GetEmailConfirmationMailQueryVariables> & ({ variables: GetEmailConfirmationMailQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetEmailConfirmationEmailQuery, GetEmailConfirmationEmailQueryVariables>(GetEmailConfirmationEmailDocument, options);
+        return Apollo.useQuery<GetEmailConfirmationMailQuery, GetEmailConfirmationMailQueryVariables>(GetEmailConfirmationMailDocument, options);
       }
-export function useGetEmailConfirmationEmailLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetEmailConfirmationEmailQuery, GetEmailConfirmationEmailQueryVariables>) {
+export function useGetEmailConfirmationMailLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetEmailConfirmationMailQuery, GetEmailConfirmationMailQueryVariables>) {
           const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetEmailConfirmationEmailQuery, GetEmailConfirmationEmailQueryVariables>(GetEmailConfirmationEmailDocument, options);
+          return Apollo.useLazyQuery<GetEmailConfirmationMailQuery, GetEmailConfirmationMailQueryVariables>(GetEmailConfirmationMailDocument, options);
         }
-export function useGetEmailConfirmationEmailSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetEmailConfirmationEmailQuery, GetEmailConfirmationEmailQueryVariables>) {
+export function useGetEmailConfirmationMailSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetEmailConfirmationMailQuery, GetEmailConfirmationMailQueryVariables>) {
           const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useSuspenseQuery<GetEmailConfirmationEmailQuery, GetEmailConfirmationEmailQueryVariables>(GetEmailConfirmationEmailDocument, options);
+          return Apollo.useSuspenseQuery<GetEmailConfirmationMailQuery, GetEmailConfirmationMailQueryVariables>(GetEmailConfirmationMailDocument, options);
         }
-export type GetEmailConfirmationEmailQueryHookResult = ReturnType<typeof useGetEmailConfirmationEmailQuery>;
-export type GetEmailConfirmationEmailLazyQueryHookResult = ReturnType<typeof useGetEmailConfirmationEmailLazyQuery>;
-export type GetEmailConfirmationEmailSuspenseQueryHookResult = ReturnType<typeof useGetEmailConfirmationEmailSuspenseQuery>;
-export type GetEmailConfirmationEmailQueryResult = Apollo.QueryResult<GetEmailConfirmationEmailQuery, GetEmailConfirmationEmailQueryVariables>;
+export type GetEmailConfirmationMailQueryHookResult = ReturnType<typeof useGetEmailConfirmationMailQuery>;
+export type GetEmailConfirmationMailLazyQueryHookResult = ReturnType<typeof useGetEmailConfirmationMailLazyQuery>;
+export type GetEmailConfirmationMailSuspenseQueryHookResult = ReturnType<typeof useGetEmailConfirmationMailSuspenseQuery>;
+export type GetEmailConfirmationMailQueryResult = Apollo.QueryResult<GetEmailConfirmationMailQuery, GetEmailConfirmationMailQueryVariables>;
 export const GetUserByIdDocument = gql`
     query GetUserById($id: String!) {
   getUserById(id: $id) {
-    _id
-    name
-    email
+    ...UserData
   }
 }
-    `;
+    ${UserDataFragmentDoc}`;
 
 /**
  * __useGetUserByIdQuery__
@@ -306,14 +317,12 @@ export type GetUserByIdLazyQueryHookResult = ReturnType<typeof useGetUserByIdLaz
 export type GetUserByIdSuspenseQueryHookResult = ReturnType<typeof useGetUserByIdSuspenseQuery>;
 export type GetUserByIdQueryResult = Apollo.QueryResult<GetUserByIdQuery, GetUserByIdQueryVariables>;
 export const RegisterUserDocument = gql`
-    mutation RegisterUser($createUserInput: CreateUserInput!) {
-  registerUser(createUserInput: $createUserInput) {
-    _id
-    name
-    email
+    mutation RegisterUser($input: CreateUserInput!) {
+  registerUser(createUserInput: $input) {
+    ...UserData
   }
 }
-    `;
+    ${UserDataFragmentDoc}`;
 export type RegisterUserMutationFn = Apollo.MutationFunction<RegisterUserMutation, RegisterUserMutationVariables>;
 
 /**
@@ -329,7 +338,7 @@ export type RegisterUserMutationFn = Apollo.MutationFunction<RegisterUserMutatio
  * @example
  * const [registerUserMutation, { data, loading, error }] = useRegisterUserMutation({
  *   variables: {
- *      createUserInput: // value for 'createUserInput'
+ *      input: // value for 'input'
  *   },
  * });
  */
@@ -341,8 +350,8 @@ export type RegisterUserMutationHookResult = ReturnType<typeof useRegisterUserMu
 export type RegisterUserMutationResult = Apollo.MutationResult<RegisterUserMutation>;
 export type RegisterUserMutationOptions = Apollo.BaseMutationOptions<RegisterUserMutation, RegisterUserMutationVariables>;
 export const LoginDocument = gql`
-    mutation Login($loginInput: LoginInput!) {
-  login(loginInput: $loginInput) {
+    mutation Login($input: LoginInput!) {
+  login(loginInput: $input) {
     ...UserData
   }
 }
@@ -362,7 +371,7 @@ export type LoginMutationFn = Apollo.MutationFunction<LoginMutation, LoginMutati
  * @example
  * const [loginMutation, { data, loading, error }] = useLoginMutation({
  *   variables: {
- *      loginInput: // value for 'loginInput'
+ *      input: // value for 'input'
  *   },
  * });
  */
@@ -373,3 +382,64 @@ export function useLoginMutation(baseOptions?: Apollo.MutationHookOptions<LoginM
 export type LoginMutationHookResult = ReturnType<typeof useLoginMutation>;
 export type LoginMutationResult = Apollo.MutationResult<LoginMutation>;
 export type LoginMutationOptions = Apollo.BaseMutationOptions<LoginMutation, LoginMutationVariables>;
+export const LogoutDocument = gql`
+    mutation Logout {
+  logout
+}
+    `;
+export type LogoutMutationFn = Apollo.MutationFunction<LogoutMutation, LogoutMutationVariables>;
+
+/**
+ * __useLogoutMutation__
+ *
+ * To run a mutation, you first call `useLogoutMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useLogoutMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [logoutMutation, { data, loading, error }] = useLogoutMutation({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useLogoutMutation(baseOptions?: Apollo.MutationHookOptions<LogoutMutation, LogoutMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<LogoutMutation, LogoutMutationVariables>(LogoutDocument, options);
+      }
+export type LogoutMutationHookResult = ReturnType<typeof useLogoutMutation>;
+export type LogoutMutationResult = Apollo.MutationResult<LogoutMutation>;
+export type LogoutMutationOptions = Apollo.BaseMutationOptions<LogoutMutation, LogoutMutationVariables>;
+export const VerifyCodeDocument = gql`
+    mutation VerifyCode($input: VerifyCodeInput!) {
+  verifyCode(verifyCodeInput: $input)
+}
+    `;
+export type VerifyCodeMutationFn = Apollo.MutationFunction<VerifyCodeMutation, VerifyCodeMutationVariables>;
+
+/**
+ * __useVerifyCodeMutation__
+ *
+ * To run a mutation, you first call `useVerifyCodeMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useVerifyCodeMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [verifyCodeMutation, { data, loading, error }] = useVerifyCodeMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useVerifyCodeMutation(baseOptions?: Apollo.MutationHookOptions<VerifyCodeMutation, VerifyCodeMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<VerifyCodeMutation, VerifyCodeMutationVariables>(VerifyCodeDocument, options);
+      }
+export type VerifyCodeMutationHookResult = ReturnType<typeof useVerifyCodeMutation>;
+export type VerifyCodeMutationResult = Apollo.MutationResult<VerifyCodeMutation>;
+export type VerifyCodeMutationOptions = Apollo.BaseMutationOptions<VerifyCodeMutation, VerifyCodeMutationVariables>;

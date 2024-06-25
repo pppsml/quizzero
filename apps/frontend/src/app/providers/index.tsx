@@ -6,5 +6,6 @@ export const withProviders = (...providers: FC<PropsWithChildren>[]) => (Wrapped
   ), <WrappedComponent {...props} />)
 }
 
-export * from './Apollo'
-export * from './Mantine'
+export { ApolloProvider } from './Apollo'
+export { MantineProvider } from './Mantine'
+export { AuthProvider } from './Auth'

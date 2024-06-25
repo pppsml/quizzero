@@ -61,9 +61,7 @@ export const LoginWithProviders = () => {
   return (
     <Flex justify="center" align="center" gap="md" pos="relative">
       <LoadingOverlay visible={isSigning} />
-        {providersButtons}
-        {providersButtons}
-        {providersButtons}
+      {providersButtons}
     </Flex>
   );
 };

@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useContext } from "react";
 import { Burger, Container, Group } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 
@@ -6,29 +6,19 @@ import { Logo } from "../../shared/ui/Logo";
 import classes from "./index.module.css";
 import { LoginButton } from "./LoginButton";
 import { UserButton } from "@/entities/user/ui/UserButton";
-import { User } from "@/shared/api/models.gen";
-
-const randomUser = (): null | User => {
-  const number = Math.random()
-  return null
-  if (number > 0.5) {
-  } else {
-    return {
-      _id: '123',
-      createdAt: new Date().toDateString(),
-      updatedAt: new Date().toDateString(),
-      email: 'asd',
-      image: '123',
-      name: '123',
-      roles: ['USER'],
-    } as User
-  }
-}
+import { UserContext } from "@/entities/user";
+import { useLogoutMutation } from "@/shared/api/schema.gen";
 
 export const Header = () => {
   const [opened, { toggle }] = useDisclosure(false);
+  const { user, setUser } = useContext(UserContext);
+  const [logoutMutation] = useLogoutMutation();
 
-  const user = useMemo(() => randomUser(), [])
+  const logoutHandler = async () => {
+    const { data } = await logoutMutation()
+
+    if (data?.logout) setUser(null);
+  };
 
   return (
     <header className={classes.header}>
@@ -36,11 +26,7 @@ export const Header = () => {
         <Group justify="space-between">
           <Logo />
           <Burger opened={opened} onClick={toggle} hiddenFrom="xs" size="sm" />
-          {
-            user 
-              ? <UserButton user={user} />
-              : <LoginButton />
-          }
+          {user ? <UserButton user={user} logoutHandler={logoutHandler} /> : <LoginButton />}
         </Group>
       </Container>
     </header>
