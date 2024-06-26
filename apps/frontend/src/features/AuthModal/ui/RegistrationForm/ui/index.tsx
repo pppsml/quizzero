@@ -1,12 +1,5 @@
-import { useEffect, useState } from "react";
-import {
-  Button,
-  LoadingOverlay,
-  Stack,
-  Stepper,
-  Text,
-} from "@mantine/core";
-import { useInterval } from "@mantine/hooks";
+import { useState } from "react";
+import { LoadingOverlay, Stepper } from "@mantine/core";
 import { hasLength, isEmail, useForm } from "@mantine/form";
 import { IconCheck, IconUser } from "@tabler/icons-react";
 import { CODE_LENGTH } from "@repo/types";
@@ -15,6 +8,7 @@ import { IValues, StepFormProps } from "../model";
 import { IForms } from "../../../model";
 import { Step1Form } from "./Step1Form";
 import { Step2Form } from "./Step2Form";
+import { StepCompleted } from "./StepCompleted";
 
 interface Props {
   setForm: (form: keyof IForms) => void;
@@ -27,10 +21,6 @@ export const RegistrationForm = ({ setForm }: Props) => {
   const prevStep = () =>
     setActiveStep((current) => (current > 0 ? current - 1 : current));
   const [loadingOverlayIsVisible, setLoadingOverlayVisible] = useState(false);
-  const [redirectTime, setRedirectTime] = useState(10);
-  const redirectInterval = useInterval(() => {
-    setRedirectTime((prev) => prev - 1);
-  }, 1e3);
 
   const form = useForm<IValues>({
     mode: "uncontrolled",
@@ -67,21 +57,6 @@ export const RegistrationForm = ({ setForm }: Props) => {
     validateInputOnChange: true,
   });
 
-  useEffect(() => {
-    if (activeStep === 2 && redirectTime >= 1) {
-      redirectInterval.start();
-    }
-
-    if (redirectTime <= 0) {
-      setForm('Login')
-      redirectInterval.stop();
-    }
-
-    return () => {
-      redirectInterval.stop();
-    };
-  }, [activeStep, redirectTime]);
-
   const stepProps: StepFormProps = {
     form,
     activeStep,
@@ -89,6 +64,7 @@ export const RegistrationForm = ({ setForm }: Props) => {
     prevStep,
     setActiveStep,
     setLoadingOverlayVisible,
+    closeModal: close,
   };
 
   return (
@@ -102,15 +78,8 @@ export const RegistrationForm = ({ setForm }: Props) => {
         <Stepper.Step label="Verify email" icon={<IconCheck />}>
           <Step2Form {...stepProps} />
         </Stepper.Step>
-
         <Stepper.Completed>
-          <Stack>
-            <Text ta="center">User successfully created.</Text>
-            <Text ta="center">
-              Через {redirectTime} секунд вы будете перенаправлены на форму входа
-            </Text>
-            <Button onClick={() => setForm("Login")}>Перейти сейчас</Button>
-          </Stack>
+          <StepCompleted {...stepProps} />
         </Stepper.Completed>
       </Stepper>
     </>

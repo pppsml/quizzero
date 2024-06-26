@@ -15,4 +15,5 @@ export interface StepFormProps {
   nextStep: () => void;
   prevStep: () => void;
   setLoadingOverlayVisible: Dispatch<SetStateAction<boolean>>
+  closeModal: () => void
 }
