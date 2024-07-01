@@ -1,12 +1,21 @@
+import { Group } from "@mantine/core"
 
+import { QuizCard } from "@/entities/quiz"
 
 export const HomePage = () => {
   return (
     <>
       <p>Homepage</p>
-      <div style={{ height: 2000, backgroundColor: '#444' }}>
-        content
-      </div>
+      <Group
+        wrap="wrap"
+      >
+        <QuizCard />
+        <QuizCard />
+        <QuizCard />
+        <QuizCard />
+        <QuizCard />
+        <QuizCard />
+      </Group>
     </>
   )
 }

@@ -4,7 +4,7 @@ import { Divider, Modal } from "@mantine/core"
 import { IForms } from '../model'
 import { LoginWithProviders } from "./LoginWithProviders";
 import { LoginForm } from "./LoginForm";
-import { RegistrationForm } from "./RegistrationForm/ui";
+import { RegistrationForm } from "./RegistrationForm";
 
 interface Props {
   opened: boolean;
