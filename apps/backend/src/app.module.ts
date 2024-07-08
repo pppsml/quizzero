@@ -4,6 +4,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { GraphQLModule } from '@nestjs/graphql';
 import { MailerModule } from '@nestjs-modules/mailer';
 
+import { AppController } from './app.controller';
 import { AuthModule } from './auth/auth.module';
 
 import {
@@ -23,7 +24,7 @@ import {
     MailerModule.forRootAsync(getMailerConfig()),
     AuthModule,
   ],
-  controllers: [],
+  controllers: [AppController],
   providers: [],
 })
 export class AppModule {}
