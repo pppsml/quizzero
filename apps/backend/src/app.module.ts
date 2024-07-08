@@ -7,6 +7,7 @@ import { MailerModule } from '@nestjs-modules/mailer';
 import { AuthModule } from './auth/auth.module';
 
 import {
+  microservice,
   getConfigModuleOptions,
   getGraphqlConfig,
   getMailerConfig,
@@ -15,6 +16,7 @@ import {
 
 @Module({
   imports: [
+    microservice,
     ConfigModule.forRoot(getConfigModuleOptions()),
     MongooseModule.forRootAsync(getMongooseConfig()),
     GraphQLModule.forRoot(getGraphqlConfig()),
