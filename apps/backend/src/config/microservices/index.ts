@@ -1,1 +1,0 @@
-export { microservice } from './test.config'

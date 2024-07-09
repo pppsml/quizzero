@@ -7,11 +7,11 @@ import { MicroserviceController } from "./microservice.controller";
   imports: [
     ClientsModule.register([
       {
-        transport: Transport.TCP,
-        name: 'TEST_MICROSERVICE',
+        name: 'ACCOUNT_SERVICE',
+        transport: Transport.RMQ,
         options: {
-          host: 'localhost',
-          port: 5001,
+          urls: ['amqp://localhost:5672'],
+          queue: 'account_service_queue',
         }
       },
     ])

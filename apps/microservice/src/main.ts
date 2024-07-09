@@ -2,16 +2,19 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 
-const microserviceOptions: MicroserviceOptions = {
+const microservicesOptions: MicroserviceOptions = {
+  transport: Transport.RMQ,
   options: {
-    host: 'localhost',
-    port: 5001,
-  },
-  transport: Transport.TCP
+    urls: ['amqp://localhost:5672'],
+    queue: 'account_service_queue',
+  }
 }
 
 async function bootstrap() {
-  const app = await NestFactory.createMicroservice(AppModule);
+  const app = await NestFactory.createMicroservice(
+    AppModule,
+    microservicesOptions,
+  );
   await app.listen();
 }
 bootstrap();
