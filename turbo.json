@@ -1,5 +1,5 @@
 {
-  "globalDependencies": [".env.development.local"],
+  "globalDependencies": [".env"],
   "$schema": "https://turbo.build/schema.json",
   "pipeline": {
     "build": {

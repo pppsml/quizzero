@@ -29,6 +29,7 @@ RUN pnpm install
 
 # Build the project and its dependencies
 COPY --from=builder /app/out/full/ .
+COPY tsconfig.json tsconfig.json
 COPY turbo.json turbo.json
 
 # Uncomment and use build args to enable remote caching
@@ -43,12 +44,10 @@ RUN pnpm turbo build --filter=backend...
 FROM base AS runner
 WORKDIR /app
 
-# Don't run production as root
-RUN addgroup --system --gid 1001 expressjs
-RUN adduser --system --uid 1001 expressjs
-USER expressjs
+RUN npm install -g pnpm
+
 COPY --from=installer /app .
 
-CMD node apps/backend/dist/index.js
+CMD ["pnpm", "--filter=backend", "run", "start:prod"]
 
 # TODO
