@@ -14,7 +14,7 @@ interface Props {
   setForm: (form: keyof IForms) => void;
 }
 
-export const RegistrationForm = ({ setForm }: Props) => {
+export const RegistrationForm = ({  }: Props) => {
   const [activeStep, setActiveStep] = useState(0);
   const nextStep = () =>
     setActiveStep((current) => (current < 2 ? current + 1 : current));

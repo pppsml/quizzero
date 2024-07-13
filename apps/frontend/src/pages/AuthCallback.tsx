@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import { useParams, useSearchParams } from 'react-router-dom'
 
-import { useProviderCallbackLazyQuery, useProviderCallbackQuery } from '@/shared/api/schema.gen'
+import { useProviderCallbackLazyQuery } from '@/shared/api/schema.gen'
 import { LoadingOverlay } from '@mantine/core'
 
 export const AuthCallbackPage = () => {

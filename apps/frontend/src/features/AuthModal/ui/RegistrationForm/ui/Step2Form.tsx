@@ -11,8 +11,6 @@ import { IValues, StepFormProps } from "../model";
 
 export const Step2Form = ({
   form,
-  activeStep,
-  setActiveStep,
   nextStep,
   prevStep,
   setLoadingOverlayVisible,
