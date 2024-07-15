@@ -10,5 +10,23 @@ services:
     ports:
       - 5000:5000
     env_file: ./.env
+  frontend: 
+    container_name: frontend
+    build:
+      context: .
+      dockerfile: ./apps/frontend/Dockerfile
+      args:
+      - VITE_FRONTEND_URI=$VITE_FRONTEND_URI
+      - VITE_BACKEND_URI=$VITE_BACKEND_URI
+      - VITE_BACKEND_URI_GRAPHQL=$VITE_BACKEND_URI_GRAPHQL
+      - VITE_BACKEND_URI_GRAPHQL_CODEGEN=$VITE_BACKEND_URI_GRAPHQL_CODEGEN
+    depends_on:
+      - backend
+    restart: unless-stopped
+    ports:
+      - 5173:5173
+      - 4173:4173
 
-# TODO
+networks:
+  app_network: 
+    external: true

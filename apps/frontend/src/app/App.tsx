@@ -9,6 +9,8 @@ import { MainLayout } from "@/layouts/MainLayout/index";
 const { AuthCallbackPage, HomePage } = lazily(() => import("@/pages"));
 
 const App = () => {
+  console.log(import.meta.env)
+
   return (
     <Paper>
       <BrowserRouter>

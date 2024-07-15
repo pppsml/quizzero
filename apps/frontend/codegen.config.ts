@@ -1,7 +1,8 @@
 import { CodegenConfig } from '@graphql-codegen/cli'
 
 const config: CodegenConfig = {
-  schema: import.meta.env.VITE_BACKEND_URI_GRAPHQL,
+  schema: import.meta.env.VITE_BACKEND_URI_GRAPHQL_CODEGEN,
+  // schema: "http://127.0.0.1:5000/graphql",
   documents: 'src/**/*.{gql,graphql}',
   config: {
     withHooks: true,
