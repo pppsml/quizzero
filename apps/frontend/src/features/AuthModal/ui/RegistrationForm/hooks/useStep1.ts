@@ -3,11 +3,11 @@ import {
   useUserWithEmailExistsLazyQuery,
 } from "@/shared/api";
 
-import { IValues, StepFormProps } from "../model";
+import { IValues, StepProps } from "../model";
 
-interface Input extends StepFormProps {}
+interface Input extends StepProps {}
 
-export const useStep1Form = ({
+export const useStep1 = ({
   form,
   nextStep,
   setLoadingOverlayVisible

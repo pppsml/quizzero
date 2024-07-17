@@ -1,10 +1,10 @@
 import { Text } from "@mantine/core";
 
-import { StepFormProps } from "../model";
-import { useStepCompletedForm } from "../hooks";
+import { StepProps } from "../model";
+import { useStepCompleted } from "../hooks";
 
-export const StepCompleted = (props: StepFormProps) => {
-  const { loginError } = useStepCompletedForm(props)
+export const StepCompleted = (props: StepProps) => {
+  const { loginError } = useStepCompleted(props)
 
   if (loginError) {
     <Text c='red'>Error: {loginError.message}</Text>

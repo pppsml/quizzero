@@ -8,7 +8,7 @@ export interface IValues extends CreateUserInput {
   code: string;
 }
 
-export interface StepFormProps {
+export interface StepProps {
   form: UseFormReturnType<IValues>;
   activeStep: number;
   setActiveStep: Dispatch<SetStateAction<number>>;

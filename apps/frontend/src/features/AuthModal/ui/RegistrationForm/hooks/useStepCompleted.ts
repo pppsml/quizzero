@@ -2,11 +2,11 @@ import { useEffect } from "react";
 import { useUserContext } from "@/entities/user/model/context";
 
 import { useLoginMutation } from "@/shared/api";
-import { StepFormProps } from "../model";
+import { StepProps } from "../model";
 
-interface Input extends StepFormProps {}
+interface Input extends StepProps {}
 
-export const useStepCompletedForm = ({
+export const useStepCompleted = ({
   form,
   setLoadingOverlayVisible,
   closeModal,

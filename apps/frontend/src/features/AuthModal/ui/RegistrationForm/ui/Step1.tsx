@@ -2,13 +2,13 @@ import { Button, PasswordInput, Stack, TextInput } from "@mantine/core";
 
 import { PasswordInputWithStrengthMeter } from "@/shared/ui/PasswordInputWithStrengthMeter";
 
-import { StepFormProps } from "../model";
-import { useStep1Form } from "../hooks";
+import { StepProps } from "../model";
+import { useStep1 } from "../hooks";
 
-export const Step1Form = (props: StepFormProps) => {
+export const Step1 = (props: StepProps) => {
   const { getInputProps, onSubmit } = props.form
   
-  const { submitHandler } = useStep1Form(props)
+  const { submitHandler } = useStep1(props)
 
   return (
     <form onSubmit={onSubmit(submitHandler)}>

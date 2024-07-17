@@ -1,14 +1,14 @@
 import { Button, Group, Input, PinInput, Stack, Text } from "@mantine/core";
 import { IconArrowLeft } from "@tabler/icons-react";
 
-import { StepFormProps } from "../model";
-import { useStep2Form } from "../hooks";
+import { StepProps } from "../model";
+import { useStep2 } from "../hooks";
 
-export const Step2Form = (props: StepFormProps) => {
+export const Step2 = (props: StepProps) => {
   const { form, prevStep } = props;
   const { getInputProps, onSubmit, errors } = form;
 
-  const { submitHandler, registerUserError, verifyCodeError } = useStep2Form(props);
+  const { submitHandler, registerUserError, verifyCodeError } = useStep2(props);
 
   return (
     <form onSubmit={onSubmit(submitHandler)}>

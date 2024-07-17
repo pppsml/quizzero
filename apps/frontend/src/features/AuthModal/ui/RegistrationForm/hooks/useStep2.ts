@@ -4,11 +4,11 @@ import {
   useVerifyCodeMutation,
 } from "@/shared/api";
 
-import { IValues, StepFormProps } from "../model";
+import { IValues, StepProps } from "../model";
 
-interface Input extends StepFormProps {}
+interface Input extends StepProps {}
 
-export const useStep2Form = ({ nextStep, setLoadingOverlayVisible }: Input) => {
+export const useStep2 = ({ nextStep, setLoadingOverlayVisible }: Input) => {
   const [verifyCodeMutation, { error: verifyCodeError }] =
     useVerifyCodeMutation();
   const [registerUserMutation, { error: registerUserError }] =
