@@ -15,8 +15,3 @@ export const providers: Provider[] = [
     icon: <IconBrandGoogle />,
   },
 ]
-
-export interface IForms {
-  Login: ReactNode;
-  Registration: ReactNode;
-}

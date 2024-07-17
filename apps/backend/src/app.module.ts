@@ -5,6 +5,7 @@ import { GraphQLModule } from '@nestjs/graphql';
 import { MailerModule } from '@nestjs-modules/mailer';
 
 import { AuthModule } from './auth/auth.module';
+import { QuizModule } from './quiz/quiz.module';
 
 import {
   getConfigModuleOptions,
@@ -20,6 +21,7 @@ import {
     GraphQLModule.forRoot(getGraphqlConfig()),
     MailerModule.forRootAsync(getMailerConfig()),
     AuthModule,
+    QuizModule,
   ],
   controllers: [],
   providers: [],

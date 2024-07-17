@@ -16,6 +16,21 @@ export type Scalars = {
   Timestamp: { input: any; output: any; }
 };
 
+export type AnswerOption = {
+  id: Scalars['Int']['output'];
+  text: Scalars['String']['output'];
+};
+
+export type AnswerOptionInput = {
+  id: Scalars['Int']['input'];
+  text: Scalars['String']['input'];
+};
+
+export type CreateQuizInput = {
+  questions: Array<QuestionInput>;
+  title: Scalars['String']['input'];
+};
+
 export type CreateUserInput = {
   email: Scalars['String']['input'];
   name?: InputMaybe<Scalars['String']['input']>;
@@ -29,10 +44,16 @@ export type LoginInput = {
 };
 
 export type Mutation = {
+  createQuiz: Quiz;
   login: User;
   logout: Scalars['Boolean']['output'];
   registerUser: User;
   verifyCode: Scalars['Boolean']['output'];
+};
+
+
+export type MutationCreateQuizArgs = {
+  createQuizInput: CreateQuizInput;
 };
 
 
@@ -54,6 +75,7 @@ export type Query = {
   getAuthUri: Scalars['String']['output'];
   getEmailConfirmationMail: Scalars['Boolean']['output'];
   getMe?: Maybe<User>;
+  getQuizById: Quiz;
   getUserById?: Maybe<User>;
   providerCallback?: Maybe<User>;
   userWithEmailExists: Scalars['Boolean']['output'];
@@ -70,6 +92,11 @@ export type QueryGetEmailConfirmationMailArgs = {
 };
 
 
+export type QueryGetQuizByIdArgs = {
+  quizId: Scalars['String']['input'];
+};
+
+
 export type QueryGetUserByIdArgs = {
   id: Scalars['String']['input'];
 };
@@ -83,6 +110,29 @@ export type QueryProviderCallbackArgs = {
 
 export type QueryUserWithEmailExistsArgs = {
   email: Scalars['String']['input'];
+};
+
+export type Question = {
+  answerOptions: Array<AnswerOption>;
+  correct: Scalars['Int']['output'];
+  id: Scalars['Int']['output'];
+  text: Scalars['String']['output'];
+};
+
+export type QuestionInput = {
+  answerOptions: Array<AnswerOptionInput>;
+  correct: Scalars['Int']['input'];
+  id: Scalars['Int']['input'];
+  text: Scalars['String']['input'];
+};
+
+export type Quiz = {
+  _id: Scalars['GraphQLObjectId']['output'];
+  createdAt: Scalars['Timestamp']['output'];
+  createdBy: User;
+  questions: Array<Question>;
+  title: Scalars['String']['output'];
+  updatedAt: Scalars['Timestamp']['output'];
 };
 
 export type User = {

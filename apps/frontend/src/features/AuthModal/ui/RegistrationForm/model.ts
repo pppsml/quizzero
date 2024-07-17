@@ -1,7 +1,7 @@
 import { Dispatch, SetStateAction } from "react";
 import { UseFormReturnType } from "@mantine/form";
 
-import { CreateUserInput } from "@/shared/api/models.gen";
+import type { CreateUserInput } from "@/shared/api";
 
 export interface IValues extends CreateUserInput {
   passwordConfirm: string;

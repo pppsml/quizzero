@@ -1,6 +1,6 @@
-import { Dispatch, SetStateAction, createContext } from "react";
+import { Dispatch, SetStateAction, createContext, useContext } from "react";
 
-import { User } from "@/shared/api/models.gen";
+import type { User } from "@/shared/api";
 
 interface Context {
   user: User | null;
@@ -13,3 +13,5 @@ export const UserContext = createContext<Context>({
   isAuth: false,
   setUser: () => {},
 })
+
+export const useUserContext = () => useContext(UserContext)

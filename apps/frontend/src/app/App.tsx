@@ -4,13 +4,11 @@ import { lazily } from "react-lazily";
 
 import { ApolloProvider, MantineProvider, AuthProvider, withProviders } from "./providers";
 
-import { MainLayout } from "@/layouts/MainLayout/index";
+import { MainLayout } from "./layouts/MainLayout";
 
 const { AuthCallbackPage, HomePage } = lazily(() => import("@/pages"));
 
 const App = () => {
-  console.log(import.meta.env)
-
   return (
     <Paper>
       <BrowserRouter>

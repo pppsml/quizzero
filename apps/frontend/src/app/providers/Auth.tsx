@@ -1,8 +1,8 @@
 import { PropsWithChildren, useEffect, useState } from 'react'
 
 import { UserContext } from '@/entities/user'
-import { useGetMeQuery } from '@/shared/api/schema.gen'
-import { User } from '@/shared/api/models.gen'
+import { useGetMeQuery } from '@/shared/api'
+import type { User } from '@/shared/api'
 
 export const AuthProvider = ({ children }: PropsWithChildren) => {
   const { data } = useGetMeQuery()

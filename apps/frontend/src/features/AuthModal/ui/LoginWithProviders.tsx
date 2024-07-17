@@ -3,7 +3,7 @@ import { ActionIcon, Flex, LoadingOverlay } from "@mantine/core";
 import { AllowedProviders } from "@repo/types";
 
 import { providers } from "../model";
-import { useGetAuthUriLazyQuery } from "@/shared/api/schema.gen";
+import { useGetAuthUriLazyQuery } from "@/shared/api";
 import { getCurrentBrowserName } from "@/shared/utils/getCurrentBrowserName";
 import { BrowserNames } from "@/shared/utils/getCurrentBrowserName/model";
 import { spawnWindowInScreenCenter } from "@/shared/utils/spawnWindowInScreenCenter";

@@ -1,51 +1,14 @@
 import { Button, PasswordInput, Stack, TextInput } from "@mantine/core";
 
 import { PasswordInputWithStrengthMeter } from "@/shared/ui/PasswordInputWithStrengthMeter";
-import { useGetEmailConfirmationMailLazyQuery, useUserWithEmailExistsLazyQuery } from "@/shared/api/schema.gen";
 
-import { IValues, StepFormProps } from "../model";
+import { StepFormProps } from "../model";
+import { useStep1Form } from "../hooks";
 
-export const Step1Form = ({
-  form,
-  nextStep,
-  setLoadingOverlayVisible,
-}: StepFormProps) => {
-  const { getInputProps, onSubmit, setFieldError } = form
-
-  const [userExistsQuery] =
-    useUserWithEmailExistsLazyQuery({
-      fetchPolicy: "no-cache",
-    });
-  const [getEmailConfirmationMail] = useGetEmailConfirmationMailLazyQuery();
-
-  const submitHandler = async ({ email }: IValues) => {
-    setLoadingOverlayVisible(true)
-    const { data: userExistsQueryData } = await userExistsQuery({
-      variables: {
-        email,
-      },
-    });
-
-    if (userExistsQueryData?.userWithEmailExists) {
-      setLoadingOverlayVisible(false)
-      setFieldError("email", `User with email "${email}" already exists`);
-      return;
-    }
-
-    const { data: getEmailConfirmationMailData } =
-      await getEmailConfirmationMail({
-        variables: {
-          email,
-        },
-        fetchPolicy: "no-cache",
-      });
-
-    setLoadingOverlayVisible(false)
-
-    if (getEmailConfirmationMailData?.getEmailConfirmationMail) {
-      nextStep();
-    }
-  };
+export const Step1Form = (props: StepFormProps) => {
+  const { getInputProps, onSubmit } = props.form
+  
+  const { submitHandler } = useStep1Form(props)
 
   return (
     <form onSubmit={onSubmit(submitHandler)}>

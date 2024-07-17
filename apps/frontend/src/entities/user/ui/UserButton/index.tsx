@@ -22,7 +22,7 @@ import {
   IconTrash,
 } from "@tabler/icons-react";
 
-import { User } from "@/shared/api/models.gen";
+import type { User } from "@/shared/api";
 
 import classes from "./index.module.css";
 

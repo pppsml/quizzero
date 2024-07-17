@@ -1,10 +1,8 @@
 import { useState } from "react";
 import { Divider, Modal } from "@mantine/core"
 
-import { IForms } from '../model'
+import { AuthModalContext, FORMS_ENUM, Forms } from '../model'
 import { LoginWithProviders } from "./LoginWithProviders";
-import { LoginForm } from "./LoginForm";
-import { RegistrationForm } from "./RegistrationForm";
 
 interface Props {
   opened: boolean;
@@ -12,15 +10,13 @@ interface Props {
 }
 
 export const AuthModal = ({ opened, close }: Props) => {
-  const [ currentForm, setCurrentForm ] = useState<keyof IForms>('Login')
-  const [ forms ] = useState<IForms>({
-    Login: <LoginForm setForm={setCurrentForm} closeModal={close} />,
-    Registration: <RegistrationForm setForm={setCurrentForm} />
-  })
+  const [ currentForm, setCurrentForm ] = useState<FORMS_ENUM>(FORMS_ENUM.LOGIN)
 
   return (
     <Modal title={currentForm} opened={opened} onClose={close} size="lg">
-      {forms[currentForm]}
+      <AuthModalContext.Provider value={{ closeModal: close, currentForm, setCurrentForm }}>
+        {Forms[currentForm]}
+      </AuthModalContext.Provider>
       <Divider label="or login with" my="lg" />
       <LoginWithProviders />
     </Modal>

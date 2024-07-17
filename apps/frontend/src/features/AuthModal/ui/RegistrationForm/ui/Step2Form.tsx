@@ -1,63 +1,17 @@
 import { Button, Group, Input, PinInput, Stack, Text } from "@mantine/core";
 import { IconArrowLeft } from "@tabler/icons-react";
 
-import {
-  useRegisterUserMutation,
-  useVerifyCodeMutation,
-} from "@/shared/api/schema.gen";
-import { VerificationCodeType } from "@/shared/api/models.gen";
+import { StepFormProps } from "../model";
+import { useStep2Form } from "../hooks";
 
-import { IValues, StepFormProps } from "../model";
-
-export const Step2Form = ({
-  form,
-  nextStep,
-  prevStep,
-  setLoadingOverlayVisible,
-}: StepFormProps) => {
+export const Step2Form = (props: StepFormProps) => {
+  const { form, prevStep } = props;
   const { getInputProps, onSubmit, errors } = form;
 
-  const [verifyCodeMutation, { error: verifyCodeError }] =
-    useVerifyCodeMutation();
-  const [registerUserMutation, { error: registerUserError }] =
-    useRegisterUserMutation();
-
-  const step2Submit = async ({ code, email, password, name }: IValues) => {
-    setLoadingOverlayVisible(true);
-    const { data: verifyCodeData } = await verifyCodeMutation({
-      variables: {
-        input: {
-          code,
-          email,
-          type: VerificationCodeType.Email,
-        },
-      },
-    }).finally(() => setLoadingOverlayVisible(false));
-
-    if (!verifyCodeData?.verifyCode) return;
-
-    const { data: registerUserData } = await registerUserMutation({
-      variables: {
-        input: {
-          email,
-          password,
-          name,
-        },
-      },
-    })
-      .catch((err) => {
-        console.log(err.message);
-        return err;
-      })
-      .finally(() => setLoadingOverlayVisible(false));
-
-    if (registerUserData?.registerUser._id) {
-      nextStep();
-    }
-  };
+  const { submitHandler, registerUserError, verifyCodeError } = useStep2Form(props);
 
   return (
-    <form onSubmit={onSubmit(step2Submit)}>
+    <form onSubmit={onSubmit(submitHandler)}>
       <Stack justify="center" align="center">
         <Text>A mail with a code has been sent to your email</Text>
         <Input.Wrapper

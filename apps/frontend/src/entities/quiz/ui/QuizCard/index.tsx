@@ -13,6 +13,14 @@ import { IconBookmark, IconHeart, IconShare } from "@tabler/icons-react";
 
 import classes from "./QuizCard.module.css";
 
+import type { Quiz } from "@/shared/api";
+
+interface Props {
+  header: any;
+  footer: any;
+  quiz: Quiz
+}
+
 export const QuizCard = () => {
   const theme = useMantineTheme();
 
