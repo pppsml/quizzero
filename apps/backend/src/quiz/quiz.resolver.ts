@@ -16,10 +16,16 @@ export class QuizResolver {
   ) {}
   
   @Query(() => Quiz)
-  async getQuizById(
+  getQuizById(
     @Args('quizId') quizId: string
-  ) {
-    return await this.quizService.findOneById(quizId)
+  ): Promise<Quiz> {
+    return this.quizService.getOneById(quizId)
+  }
+
+  // todo filters
+  @Query(() => [Quiz])
+  getAllQuizzes(): Promise<Quiz[]> {
+    return this.quizService.getAll()
   }
 
 

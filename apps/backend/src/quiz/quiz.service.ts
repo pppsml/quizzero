@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, PipelineStage } from 'mongoose';
 import { IQuestion } from '@repo/types';
 
 import { Quiz } from './quiz.schema';
@@ -29,7 +29,33 @@ export class QuizService {
     return quiz.populate('createdBy')
   }
 
-  async findOneById(id: string): Promise<Quiz> {
+  getOneById(id: string): Promise<Quiz> {
     return this.quizModel.findById(id)
+  }
+
+  async getAll(): Promise<Quiz[]> {
+    const pipeline: PipelineStage[] = [
+      { $sort: { createdAt: -1 } },
+      {
+        $lookup: {
+          from: 'users',
+          localField: 'createdBy',
+          foreignField: '_id',
+          as: 'createdBy',
+        }
+      },
+      {
+        $addFields: {
+          createdBy: { $arrayElemAt: ['$createdBy', 0] }
+        }
+      }
+    ]
+
+    try {
+      return this.quizModel.aggregate(pipeline)
+    } catch (error) {
+      console.log(error)
+      return error
+    }
   }
 }
