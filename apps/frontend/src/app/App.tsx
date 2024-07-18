@@ -4,7 +4,7 @@ import { lazily } from "react-lazily";
 
 import { ApolloProvider, MantineProvider, AuthProvider, withProviders } from "./providers";
 
-import { MainLayout } from "./layouts/MainLayout";
+import { LayoutWithAppShell } from "./layouts/LayoutWithAppShell";
 
 const { AuthCallbackPage, HomePage } = lazily(() => import("@/pages"));
 
@@ -13,7 +13,7 @@ const App = () => {
     <Paper>
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<MainLayout />}>
+          <Route path="/" element={<LayoutWithAppShell />}>
             <Route path="/" element={<HomePage />} />
           </Route>
           <Route

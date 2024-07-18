@@ -72,6 +72,7 @@ export type MutationVerifyCodeArgs = {
 };
 
 export type Query = {
+  getAllQuizzes: Array<Quiz>;
   getAuthUri: Scalars['String']['output'];
   getEmailConfirmationMail: Scalars['Boolean']['output'];
   getMe?: Maybe<User>;

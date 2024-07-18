@@ -1,6 +1,6 @@
 import { Group } from "@mantine/core"
 
-import { QuizCard } from "@/entities/quiz"
+import { QuizList } from "@/widgets/QuizList"
 
 export const HomePage = () => {
   return (
@@ -9,12 +9,7 @@ export const HomePage = () => {
       <Group
         wrap="wrap"
       >
-        <QuizCard />
-        <QuizCard />
-        <QuizCard />
-        <QuizCard />
-        <QuizCard />
-        <QuizCard />
+        <QuizList />
       </Group>
     </>
   )

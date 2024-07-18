@@ -56,3 +56,39 @@ mutation Logout {
 mutation VerifyCode($input: VerifyCodeInput!) {
   verifyCode(verifyCodeInput: $input)
 }
+
+
+
+
+mutation CreateQuiz($createQuizInput: CreateQuizInput!) {
+  createQuiz(createQuizInput: $createQuizInput) {
+    _id
+    title
+    questions {
+      id
+      text
+      answerOptions {
+        id
+        text
+      }
+      correct
+    }
+    createdBy {
+      ...UserData
+    }
+    createdAt
+    updatedAt
+  } 
+}
+
+query GetAllQuizzes {
+  getAllQuizzes {
+    _id
+    title
+    createdBy {
+      ...UserData
+    }
+    createdAt
+    updatedAt
+  } 
+}

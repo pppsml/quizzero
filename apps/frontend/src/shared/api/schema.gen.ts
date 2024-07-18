@@ -72,6 +72,18 @@ export type VerifyCodeMutationVariables = Types.Exact<{
 
 export type VerifyCodeMutation = { verifyCode: boolean };
 
+export type CreateQuizMutationVariables = Types.Exact<{
+  createQuizInput: Types.CreateQuizInput;
+}>;
+
+
+export type CreateQuizMutation = { createQuiz: { _id: any, title: string, createdAt: any, updatedAt: any, questions: Array<{ id: number, text: string, correct: number, answerOptions: Array<{ id: number, text: string }> }>, createdBy: { _id: any, name: string, email: string, image?: string | null, roles: Array<string>, createdAt: any } } };
+
+export type GetAllQuizzesQueryVariables = Types.Exact<{ [key: string]: never; }>;
+
+
+export type GetAllQuizzesQuery = { getAllQuizzes: Array<{ _id: any, title: string, createdAt: any, updatedAt: any, createdBy: { _id: any, name: string, email: string, image?: string | null, roles: Array<string>, createdAt: any } }> };
+
 export const UserDataFragmentDoc = gql`
     fragment UserData on User {
   _id
@@ -443,3 +455,96 @@ export function useVerifyCodeMutation(baseOptions?: Apollo.MutationHookOptions<V
 export type VerifyCodeMutationHookResult = ReturnType<typeof useVerifyCodeMutation>;
 export type VerifyCodeMutationResult = Apollo.MutationResult<VerifyCodeMutation>;
 export type VerifyCodeMutationOptions = Apollo.BaseMutationOptions<VerifyCodeMutation, VerifyCodeMutationVariables>;
+export const CreateQuizDocument = gql`
+    mutation CreateQuiz($createQuizInput: CreateQuizInput!) {
+  createQuiz(createQuizInput: $createQuizInput) {
+    _id
+    title
+    questions {
+      id
+      text
+      answerOptions {
+        id
+        text
+      }
+      correct
+    }
+    createdBy {
+      ...UserData
+    }
+    createdAt
+    updatedAt
+  }
+}
+    ${UserDataFragmentDoc}`;
+export type CreateQuizMutationFn = Apollo.MutationFunction<CreateQuizMutation, CreateQuizMutationVariables>;
+
+/**
+ * __useCreateQuizMutation__
+ *
+ * To run a mutation, you first call `useCreateQuizMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateQuizMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createQuizMutation, { data, loading, error }] = useCreateQuizMutation({
+ *   variables: {
+ *      createQuizInput: // value for 'createQuizInput'
+ *   },
+ * });
+ */
+export function useCreateQuizMutation(baseOptions?: Apollo.MutationHookOptions<CreateQuizMutation, CreateQuizMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateQuizMutation, CreateQuizMutationVariables>(CreateQuizDocument, options);
+      }
+export type CreateQuizMutationHookResult = ReturnType<typeof useCreateQuizMutation>;
+export type CreateQuizMutationResult = Apollo.MutationResult<CreateQuizMutation>;
+export type CreateQuizMutationOptions = Apollo.BaseMutationOptions<CreateQuizMutation, CreateQuizMutationVariables>;
+export const GetAllQuizzesDocument = gql`
+    query GetAllQuizzes {
+  getAllQuizzes {
+    _id
+    title
+    createdBy {
+      ...UserData
+    }
+    createdAt
+    updatedAt
+  }
+}
+    ${UserDataFragmentDoc}`;
+
+/**
+ * __useGetAllQuizzesQuery__
+ *
+ * To run a query within a React component, call `useGetAllQuizzesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAllQuizzesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetAllQuizzesQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetAllQuizzesQuery(baseOptions?: Apollo.QueryHookOptions<GetAllQuizzesQuery, GetAllQuizzesQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetAllQuizzesQuery, GetAllQuizzesQueryVariables>(GetAllQuizzesDocument, options);
+      }
+export function useGetAllQuizzesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetAllQuizzesQuery, GetAllQuizzesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetAllQuizzesQuery, GetAllQuizzesQueryVariables>(GetAllQuizzesDocument, options);
+        }
+export function useGetAllQuizzesSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetAllQuizzesQuery, GetAllQuizzesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetAllQuizzesQuery, GetAllQuizzesQueryVariables>(GetAllQuizzesDocument, options);
+        }
+export type GetAllQuizzesQueryHookResult = ReturnType<typeof useGetAllQuizzesQuery>;
+export type GetAllQuizzesLazyQueryHookResult = ReturnType<typeof useGetAllQuizzesLazyQuery>;
+export type GetAllQuizzesSuspenseQueryHookResult = ReturnType<typeof useGetAllQuizzesSuspenseQuery>;
+export type GetAllQuizzesQueryResult = Apollo.QueryResult<GetAllQuizzesQuery, GetAllQuizzesQueryVariables>;

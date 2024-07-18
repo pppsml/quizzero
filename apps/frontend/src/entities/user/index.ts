@@ -1,2 +1,1 @@
-export { UserContext } from './model/context'
-export { UserButton } from './ui/UserButton'
+export { useUserContext, UserContext } from './model/context'

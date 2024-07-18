@@ -22,18 +22,31 @@ import {
   IconTrash,
 } from "@tabler/icons-react";
 
-import type { User } from "@/shared/api";
+import { useLogoutMutation, type User } from "@/shared/api";
 
-import classes from "./index.module.css";
+import classes from "./UserButton.module.css";
 
 interface Props {
   user: User;
-  logoutHandler: () => void;
+  setUser: (user: User | null) => void 
 }
 
-export const UserButton = ({ user, logoutHandler }: Props) => {
+export const UserButton = ({ user, setUser }: Props) => {
+  const [logoutMutation, { error: logoutError }] = useLogoutMutation();
   const theme = useMantineTheme();
   const [userMenuOpened, setUserMenuOpened] = useState(false);
+
+  if (logoutError) {
+    alert('Error while logout: ' + logoutError.message)
+  }
+
+  const logoutHandler = async () => {
+    const { data } = await logoutMutation()
+    
+    if (data?.logout) {
+      setUser(null)
+    }
+  }
 
   return (
     <Menu
