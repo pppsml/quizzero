@@ -43,21 +43,23 @@ export class SessionService implements OnModuleInit {
   private async prune() {
     const sessions = await this.sessionModel.find()
     if (!sessions.length) {
-      this.logger.log(`Prune at ${new Date().toLocaleTimeString()}. Deleted 0 sessions.`)
+      this.logger.log(`Prune at ${new Date().toLocaleTimeString()}. No sessions to delete.`)
       return
     }
 
     let deletedCount = 0
-    sessions.forEach(async session => {
+    const deletingSessionPromises = sessions.map(async session => {
       const { sid, expiresAt } = session
       if ((new Date(expiresAt)).valueOf() < Date.now()) {
         const foundSession = await this.getOneBySId(sid)
+        deletedCount++
         if (foundSession) {
           await this.deleteOne({ sid })
-          deletedCount += 1
         }
       }
     })
+
+    await Promise.all(deletingSessionPromises)
 
     this.logger.log(`Prune at ${new Date().toLocaleTimeString()}. Deleted ${deletedCount} sessions.`)
   }
