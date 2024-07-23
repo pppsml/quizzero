@@ -1,0 +1,1 @@
+export { localeContext } from './localeContext'

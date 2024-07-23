@@ -4,6 +4,7 @@
   "scripts": {
     "build": "dotenv -e .env -e .env.local -e env.production -e .env.production.local -- turbo build",
     "dev": "dotenv -e .env -e .env.local -e .env.development -e .env.development.local -- turbo dev",
+    "test": "turbo test --filter frontend",
     "lint": "turbo lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\""
   },
