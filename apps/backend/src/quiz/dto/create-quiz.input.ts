@@ -8,6 +8,8 @@ class AnswerOptionInput implements AnswerOption {
 
   @Field(() => String)
   text: string;
+
+  image: string | null;
 }
 
 @InputType()
@@ -23,6 +25,8 @@ class QuestionInput implements Question {
 
   @Field(() => Int)
   correct: number;
+
+  image: string | null;
 }
 
 @InputType()
@@ -32,4 +36,6 @@ export class CreateQuizInput implements Partial<Quiz> {
 
   @Field(() => [QuestionInput])
   questions: QuestionInput[];
+
+  image: string | null;
 }

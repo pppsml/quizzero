@@ -5,10 +5,7 @@ import { AllowedProviders, IAccount } from "@repo/types";
 import { User } from "src/user/user.schema";
 
 @Schema({
-  timestamps: {
-    createdAt: true,
-    updatedAt: true,
-  }
+  timestamps: true,
 })
 export class Account implements IAccount {
   _id: string

@@ -13,6 +13,9 @@ export class AnswerOption implements IAnswerOption {
   @Field(() => Int)
   id: number;
 
+  @Field(() => String, { nullable: true })
+  image: string | null;
+
   @Field(() => String)
   text: string;
 }
@@ -21,6 +24,9 @@ export class AnswerOption implements IAnswerOption {
 export class Question implements IQuestion {
   @Field(() => Int)
   id: number;
+
+  @Field(() => String, { nullable: true })
+  image: string | null;
 
   @Field(() => String)
   text: string;
@@ -33,14 +39,14 @@ export class Question implements IQuestion {
 }
 
 @ObjectType()
-@Schema({ timestamps: {
-    createdAt: true,
-    updatedAt: true,
-  },
-})
+@Schema({ timestamps: true })
 export class Quiz implements IQuiz {
   @Field(() => GraphQLObjectId)
   _id: string;
+
+  @Field(() => String, { nullable: true })
+  @Prop({ type: () => String, default: null })
+  image: string | null;
 
   @Field(() => String)
   @Prop({ type: () => String, required: true, })

@@ -4,6 +4,7 @@ import { Request, Response } from "express";
 import { IContext } from "src/types";
 
 export const getGraphqlConfig = (): ApolloDriverConfig => ({
+  path: '/api/graphql',
   driver: ApolloDriver,
   playground: {
     settings: {

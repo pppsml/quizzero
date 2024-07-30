@@ -3,6 +3,7 @@ import { ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import 'dotenv/config'
 import * as session from 'express-session'
+import { graphqlUploadExpress } from 'graphql-upload-ts'
 
 import { AppModule } from './app.module';
 import { ConfigServiceVariables } from './config/configService.config';
@@ -10,6 +11,7 @@ import { ConfigServiceVariables } from './config/configService.config';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const configService = app.get(ConfigService<ConfigServiceVariables>);
+  app.setGlobalPrefix('api');
 
   app.useGlobalPipes(new ValidationPipe())
 
@@ -37,6 +39,12 @@ async function bootstrap() {
       // }),
     }),
   );
+
+  app.use('/api/graphql', graphqlUploadExpress({
+    maxFileSize: 10000000,
+    maxFiles: 10,
+    overrideSendResponse: false,
+  }))
 
 
   const PORT = configService.get('PORT') || 5000

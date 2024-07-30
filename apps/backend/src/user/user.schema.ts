@@ -6,10 +6,7 @@ import { GraphQLObjectId } from "src/types/scalars/gqlObjectId";
 
 @ObjectType()
 @Schema({
-  timestamps: {
-    createdAt: true,
-    updatedAt: true,
-  },
+  timestamps: true,
 })
 export class User implements IUser {
   @Field(() => GraphQLObjectId)
