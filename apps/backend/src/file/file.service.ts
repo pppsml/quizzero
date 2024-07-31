@@ -71,7 +71,7 @@ export class FileService {
     this.writeFile(file, path)
 
     const fileData: Omit<IFile, '_id' | 'createdAt' | 'updatedAt'> = {
-      name: `${name}.${extension}`,
+      name: file.filename,
       mimeType: file.mimetype,
       encoding: file.encoding,
       extension,

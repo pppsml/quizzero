@@ -7,13 +7,21 @@ import { graphqlUploadExpress } from 'graphql-upload-ts'
 
 import { AppModule } from './app.module';
 import { ConfigServiceVariables } from './config/configService.config';
+import { NestExpressApplication } from '@nestjs/platform-express';
+import { join } from 'path';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
   const configService = app.get(ConfigService<ConfigServiceVariables>);
   app.setGlobalPrefix('api');
 
   app.useGlobalPipes(new ValidationPipe())
+  app.useStaticAssets(
+    join(__dirname, '../files'),
+    {
+      prefix: '/api/files/'
+    },
+  )
 
   app.enableCors({
     origin: true,
@@ -32,11 +40,6 @@ async function bootstrap() {
         // maxAge: 1000 * 60, // 1 min
         maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
       },
-      // store: new PrismaSessionStore(prisma, {
-      //   checkPeriod: 1000 * 60 * 5, // 5 mins
-      //   dbRecordIdIsSessionId: true,
-      //   dbRecordIdFunction: undefined,
-      // }),
     }),
   );
 

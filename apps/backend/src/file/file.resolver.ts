@@ -16,7 +16,5 @@ export class FileResolver {
     }) file: FileUpload,
   ) {
     return !!await this.fileService.createOne(file, '/');
-    // console.log(file);
-    // return true;
   }
 }
