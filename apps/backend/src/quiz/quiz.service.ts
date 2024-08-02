@@ -19,14 +19,18 @@ export class QuizService {
     return true
   }
 
-  async createQuiz({ title, questions }: CreateQuizInput, userId: any): Promise<Quiz> {
-    const quiz = await this.quizModel.create({
-      title,
-      questions,
-      createdBy: userId,
-    })
-
-    return quiz.populate('createdBy')
+  async createQuiz({ _id, title, questions, image }: CreateQuizInput, userId: string): Promise<Quiz> {
+    if (this.validateQuestions(questions)) {
+      const quiz = await this.quizModel.create({
+        _id,
+        title,
+        questions,
+        image,
+        createdBy: userId,
+      })
+      
+      return quiz.populate('createdBy')
+    }
   }
 
   getOneById(id: string): Promise<Quiz> {

@@ -1,4 +1,7 @@
 import { Field, InputType, Int } from '@nestjs/graphql';
+import { FileUpload, GraphQLUpload,  } from 'graphql-upload-ts';
+import { Types } from 'mongoose';
+
 import { Quiz, Question, AnswerOption } from '../quiz.schema';
 
 @InputType()
@@ -30,7 +33,12 @@ class QuestionInput implements Question {
 }
 
 @InputType()
-export class CreateQuizInput implements Partial<Quiz> {
+export class CreateQuizInput
+  implements
+    Omit<Quiz, '_id' | 'createdBy' | 'createdAt' | 'updatedAt' | 'image'>
+{
+  _id?: Types.ObjectId;
+
   @Field(() => String)
   title: string;
 
@@ -38,4 +46,10 @@ export class CreateQuizInput implements Partial<Quiz> {
   questions: QuestionInput[];
 
   image: string | null;
+
+  @Field(() => String, { nullable: true })
+  imageUri: string | null;
+
+  @Field(() => GraphQLUpload, { nullable: true })
+  imageFile: FileUpload | null;
 }

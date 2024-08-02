@@ -13,5 +13,8 @@ import { FileResolver } from './file.resolver';
     FileService,
     FileResolver,
   ],
+  exports: [
+    FileService,
+  ],
 })
 export class FileModule {}
