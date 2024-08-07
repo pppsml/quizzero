@@ -33,8 +33,9 @@ export class QuizService {
     }
   }
 
-  getOneById(id: string): Promise<Quiz> {
-    return this.quizModel.findById(id)
+  async getOneById(id: string): Promise<Quiz> {
+    const quiz = await this.quizModel.findById(id)
+    return quiz.populate('createdBy')
   }
 
   async getAll(): Promise<Quiz[]> {
