@@ -5,6 +5,7 @@ import { Types } from 'mongoose';
 import { QuizService } from './quiz.service';
 import { Quiz } from './quiz.schema';
 import { CreateQuizInput } from './dto/create-quiz.input';
+import { ReturnQuizDto } from './dto/return-quiz.dto';
 
 import { UserService } from 'src/user/user.service';
 import { FileService } from 'src/file/file.service';
@@ -19,7 +20,7 @@ export class QuizResolver {
     private readonly fileService: FileService,
   ) {}
   
-  @Query(() => Quiz)
+  @Query(() => ReturnQuizDto)
   getQuizById(
     @Args('quizId') quizId: string
   ): Promise<Quiz> {
@@ -27,7 +28,7 @@ export class QuizResolver {
   }
 
   // todo filters
-  @Query(() => [Quiz])
+  @Query(() => [ReturnQuizDto])
   getAllQuizzes(): Promise<Quiz[]> {
     return this.quizService.getAll()
   }
