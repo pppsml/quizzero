@@ -16,6 +16,7 @@ export const QuizListItem = ({ quiz }: Props) => {
     <>
       <QuizCard
         quiz={quiz}
+        size={quiz.image ? "lg" : "sm"} 
         bottomContent={
           <Group gap={0}>
             <LikeButton />

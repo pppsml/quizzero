@@ -82,7 +82,14 @@ export type CreateQuizMutation = { createQuiz: { _id: any, title: string, create
 export type GetAllQuizzesQueryVariables = Types.Exact<{ [key: string]: never; }>;
 
 
-export type GetAllQuizzesQuery = { getAllQuizzes: Array<{ _id: any, title: string, createdAt: any, updatedAt: any, createdBy: { _id: any, name: string, email: string, image?: string | null, roles: Array<string>, createdAt: any } }> };
+export type GetAllQuizzesQuery = { getAllQuizzes: Array<{ _id: any, title: string, image?: string | null, createdAt: any, updatedAt: any, createdBy: { _id: any, name: string, email: string, image?: string | null, roles: Array<string>, createdAt: any } }> };
+
+export type GetQuizByIdQueryVariables = Types.Exact<{
+  quizId: Types.Scalars['String']['input'];
+}>;
+
+
+export type GetQuizByIdQuery = { getQuizById: { _id: any, image?: string | null, title: string, createdAt: any, updatedAt: any, questions: Array<{ id: number, image?: string | null, text: string, answerOptions: Array<{ id: number, image?: string | null, text: string }> }>, createdBy: { _id: any, name: string, email: string, image?: string | null, roles: Array<string>, createdAt: any } } };
 
 export const UserDataFragmentDoc = gql`
     fragment UserData on User {
@@ -508,6 +515,7 @@ export const GetAllQuizzesDocument = gql`
   getAllQuizzes {
     _id
     title
+    image
     createdBy {
       ...UserData
     }
@@ -548,3 +556,60 @@ export type GetAllQuizzesQueryHookResult = ReturnType<typeof useGetAllQuizzesQue
 export type GetAllQuizzesLazyQueryHookResult = ReturnType<typeof useGetAllQuizzesLazyQuery>;
 export type GetAllQuizzesSuspenseQueryHookResult = ReturnType<typeof useGetAllQuizzesSuspenseQuery>;
 export type GetAllQuizzesQueryResult = Apollo.QueryResult<GetAllQuizzesQuery, GetAllQuizzesQueryVariables>;
+export const GetQuizByIdDocument = gql`
+    query GetQuizById($quizId: String!) {
+  getQuizById(quizId: $quizId) {
+    _id
+    image
+    title
+    questions {
+      id
+      image
+      text
+      answerOptions {
+        id
+        image
+        text
+      }
+    }
+    createdBy {
+      ...UserData
+    }
+    createdAt
+    updatedAt
+  }
+}
+    ${UserDataFragmentDoc}`;
+
+/**
+ * __useGetQuizByIdQuery__
+ *
+ * To run a query within a React component, call `useGetQuizByIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetQuizByIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetQuizByIdQuery({
+ *   variables: {
+ *      quizId: // value for 'quizId'
+ *   },
+ * });
+ */
+export function useGetQuizByIdQuery(baseOptions: Apollo.QueryHookOptions<GetQuizByIdQuery, GetQuizByIdQueryVariables> & ({ variables: GetQuizByIdQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetQuizByIdQuery, GetQuizByIdQueryVariables>(GetQuizByIdDocument, options);
+      }
+export function useGetQuizByIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetQuizByIdQuery, GetQuizByIdQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetQuizByIdQuery, GetQuizByIdQueryVariables>(GetQuizByIdDocument, options);
+        }
+export function useGetQuizByIdSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetQuizByIdQuery, GetQuizByIdQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetQuizByIdQuery, GetQuizByIdQueryVariables>(GetQuizByIdDocument, options);
+        }
+export type GetQuizByIdQueryHookResult = ReturnType<typeof useGetQuizByIdQuery>;
+export type GetQuizByIdLazyQueryHookResult = ReturnType<typeof useGetQuizByIdLazyQuery>;
+export type GetQuizByIdSuspenseQueryHookResult = ReturnType<typeof useGetQuizByIdSuspenseQuery>;
+export type GetQuizByIdQueryResult = Apollo.QueryResult<GetQuizByIdQuery, GetQuizByIdQueryVariables>;

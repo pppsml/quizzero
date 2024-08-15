@@ -85,6 +85,30 @@ query GetAllQuizzes {
   getAllQuizzes {
     _id
     title
+    image
+    createdBy {
+      ...UserData
+    }
+    createdAt
+    updatedAt
+  } 
+}
+
+query GetQuizById($quizId: String!) {
+  getQuizById(quizId: $quizId) {
+    _id
+    image
+    title
+    questions {
+      id
+      image
+      text
+      answerOptions {
+        id
+        image
+        text
+      }
+    }
     createdBy {
       ...UserData
     }

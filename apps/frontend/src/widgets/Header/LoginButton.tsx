@@ -2,7 +2,7 @@ import { Button } from '@mantine/core'
 import { useDisclosure } from '@mantine/hooks'
 import { IconLogin2 } from '@tabler/icons-react'
 
-import { AuthModal } from '@/features/AuthModal/ui'
+import { AuthModal } from '@/features/AuthModal'
 
 export const LoginButton = () => {
   const [ opened, { close, open } ] = useDisclosure()

@@ -2,6 +2,23 @@
   background-color: var(--mantine-color-body);
 }
 
+.cardWrapper {
+  max-width: calc(20rem* var(--mantine-scale));
+  margin-right: rem(16);
+}
+
+.cardWrapper.lg {
+  grid-row-end: span 47; 
+}
+
+/* .cardWrapper.md {
+  grid-row-end: span 46;
+} */
+
+.cardWrapper.sm {
+  grid-row-end: span 30;
+}
+
 .title {
   font-family: var(--mantine-font-family);
 }

@@ -14,10 +14,12 @@ export type Scalars = {
   Float: { input: number; output: number; }
   GraphQLObjectId: { input: any; output: any; }
   Timestamp: { input: any; output: any; }
+  Upload: { input: any; output: any; }
 };
 
 export type AnswerOption = {
   id: Scalars['Int']['output'];
+  image?: Maybe<Scalars['String']['output']>;
   text: Scalars['String']['output'];
 };
 
@@ -27,6 +29,8 @@ export type AnswerOptionInput = {
 };
 
 export type CreateQuizInput = {
+  imageFile?: InputMaybe<Scalars['Upload']['input']>;
+  imageUri?: InputMaybe<Scalars['String']['input']>;
   questions: Array<QuestionInput>;
   title: Scalars['String']['input'];
 };
@@ -44,11 +48,17 @@ export type LoginInput = {
 };
 
 export type Mutation = {
+  createFile: Scalars['Boolean']['output'];
   createQuiz: Quiz;
   login: User;
   logout: Scalars['Boolean']['output'];
   registerUser: User;
   verifyCode: Scalars['Boolean']['output'];
+};
+
+
+export type MutationCreateFileArgs = {
+  file: Scalars['Upload']['input'];
 };
 
 
@@ -72,11 +82,11 @@ export type MutationVerifyCodeArgs = {
 };
 
 export type Query = {
-  getAllQuizzes: Array<Quiz>;
+  getAllQuizzes: Array<ReturnQuizDto>;
   getAuthUri: Scalars['String']['output'];
   getEmailConfirmationMail: Scalars['Boolean']['output'];
   getMe?: Maybe<User>;
-  getQuizById: Quiz;
+  getQuizById: ReturnQuizDto;
   getUserById?: Maybe<User>;
   providerCallback?: Maybe<User>;
   userWithEmailExists: Scalars['Boolean']['output'];
@@ -117,6 +127,7 @@ export type Question = {
   answerOptions: Array<AnswerOption>;
   correct: Scalars['Int']['output'];
   id: Scalars['Int']['output'];
+  image?: Maybe<Scalars['String']['output']>;
   text: Scalars['String']['output'];
 };
 
@@ -131,7 +142,31 @@ export type Quiz = {
   _id: Scalars['GraphQLObjectId']['output'];
   createdAt: Scalars['Timestamp']['output'];
   createdBy: User;
+  image?: Maybe<Scalars['String']['output']>;
   questions: Array<Question>;
+  title: Scalars['String']['output'];
+  updatedAt: Scalars['Timestamp']['output'];
+};
+
+export type ReturnAnswerOptionDto = {
+  id: Scalars['Float']['output'];
+  image?: Maybe<Scalars['String']['output']>;
+  text: Scalars['String']['output'];
+};
+
+export type ReturnQuestionDto = {
+  answerOptions: Array<ReturnAnswerOptionDto>;
+  id: Scalars['Float']['output'];
+  image?: Maybe<Scalars['String']['output']>;
+  text: Scalars['String']['output'];
+};
+
+export type ReturnQuizDto = {
+  _id: Scalars['GraphQLObjectId']['output'];
+  createdAt: Scalars['Timestamp']['output'];
+  createdBy: User;
+  image?: Maybe<Scalars['String']['output']>;
+  questions: Array<ReturnQuestionDto>;
   title: Scalars['String']['output'];
   updatedAt: Scalars['Timestamp']['output'];
 };

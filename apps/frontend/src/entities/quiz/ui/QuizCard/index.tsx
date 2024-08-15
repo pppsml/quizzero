@@ -8,6 +8,8 @@ import {
   ScrollArea,
   Text,
 } from "@mantine/core";
+import { clsx } from 'clsx'
+import { Link } from "react-router-dom";
 
 import classes from "./QuizCard.module.css";
 
@@ -17,24 +19,26 @@ interface Props {
   topContent?: ReactNode;
   bottomContent?: ReactNode;
   quiz: Omit<Quiz, "questions">;
+  size?: "lg" | "sm";
 }
 
-export const QuizCard = ({ topContent, bottomContent, quiz }: Props) => {
+export const QuizCard = ({ topContent, bottomContent, quiz, size = "lg" }: Props) => {
   return (
-    <div
-      style={{
-        maxWidth: "calc(20rem* var(--mantine-scale))",
-      }}
-    >
+    <div className={clsx(classes.cardWrapper, classes[size])}>
       <Card withBorder padding="lg" radius="md" className={classes.card}>
-        <Card.Section mb="sm">
-          <Image
-            src="https://images.unsplash.com/photo-1477554193778-9562c28588c0?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=500&q=80"
-            alt="Quiz preview"
-            height={180}
-          />
-        </Card.Section>
 
+        {quiz.image && (
+          <Card.Section mb="sm">
+            <Link to={`/quiz/${quiz._id}`}>
+              <Image
+                src={quiz.image}
+                alt="Quiz preview"
+                height={180}
+              />
+            </Link>
+          </Card.Section>
+        )}
+        
         <ScrollArea type="auto">
           <Group gap="xs" wrap="nowrap" pb={16}>
             <Badge w="fit-content" variant="light">

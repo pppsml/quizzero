@@ -1,14 +1,13 @@
 import { Suspense } from "react";
 import { Outlet } from "react-router-dom";
 import { AppShell, Group, Skeleton } from "@mantine/core";
-// import { useDisclosure } from "@mantine/hooks";
+import { useDisclosure } from "@mantine/hooks";
 
 import { Footer } from "@/widgets/Footer";
 import { Header } from "@/widgets/Header";
 
 export function MainLayout() {
-  // TODO burger menu
-  // const [opened, { toggle }] = useDisclosure(); 
+  const [opened, { toggle }] = useDisclosure(); 
 
   return (
     <AppShell
@@ -16,14 +15,14 @@ export function MainLayout() {
       navbar={{
         width: 260,
         breakpoint: "sm",
-        // collapsed: { mobile: !opened },
+        collapsed: { mobile: !opened },
       }}
       footer={{ height: 45 }}
       padding="md"
     >
       <AppShell.Header>
         <Group h="100%" px="md">
-          <Header />
+          <Header onBurgerMenuClick={toggle} />
         </Group>
       </AppShell.Header>
 
@@ -40,7 +39,7 @@ export function MainLayout() {
           ))}
       </AppShell.Navbar>
 
-      <AppShell.Main>
+      <AppShell.Main miw={300}>
         <Suspense>
           <Outlet />
         </Suspense>
