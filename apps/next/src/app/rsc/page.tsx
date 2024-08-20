@@ -2,6 +2,7 @@ import { gql } from "@apollo/client";
 
 import { query } from "@/shared/api/client";
 import LoginButton from "../components/LoginButton";
+import { Button } from "@mantine/core";
 
 export default async function RscPage() {
   const { data: getMeData } = await query({

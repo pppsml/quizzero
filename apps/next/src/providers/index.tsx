@@ -1,4 +1,6 @@
 'use client'
+import { MantineProvider } from '@mantine/core';
+
 import { PropsWithChildren } from 'react';
 import { ApolloProvider } from './Apollo';
 import { UserProvider } from './User';
@@ -7,7 +9,9 @@ export const AllProviders = ({ children }: PropsWithChildren) => {
   return (
     <ApolloProvider>
       <UserProvider>
-        {children}
+        <MantineProvider>
+          {children}
+        </MantineProvider>
       </UserProvider>
     </ApolloProvider>
   );
