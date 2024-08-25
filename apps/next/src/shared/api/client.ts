@@ -2,14 +2,15 @@ import { headers } from "next/headers";
 import { HttpLink } from "@apollo/client";
 import { ApolloClient, InMemoryCache, registerApolloClient } from "@apollo/experimental-nextjs-app-support";
 
-export const makeClient = () => {
+const makeClient = () => {
   const headersInstance = headers();
 
   const httpLink = new HttpLink({
     headers: {
       cookie: headersInstance.get("cookie") ?? "",
+      "Apollo-Require-Preflight": "true",
     },
-    uri: "http://localhost:5000/api/graphql",
+    uri: process.env.NEXT_BACKEND_URI_GRAPHQL,
     credentials: "include",
   })
 

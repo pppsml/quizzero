@@ -3,10 +3,12 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev -p 4444",
+    "dev": "concurrently \"next dev -p 4444\" \"pnpm codegen:dev\"",
     "build": "next build -p 4444",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "codegen": "dotenv -c -- graphql-codegen --config codegen.config.ts",
+    "codegen:dev": "dotenv -c -- graphql-codegen -w --config codegen.config.ts"
   },
   "dependencies": {
     "@apollo/client": "^3.11.4",
@@ -15,13 +17,20 @@
     "@mantine/form": "^7.10.1",
     "@mantine/hooks": "^7.10.0",
     "next": "14.2.5",
+    "next-intl": "^3.17.4",
     "react": "^18",
     "react-dom": "^18"
   },
   "devDependencies": {
+    "@graphql-codegen/cli": "^5.0.2",
+    "@graphql-codegen/near-operation-file-preset": "^3.0.0",
+    "@graphql-codegen/typescript": "^4.0.7",
+    "@graphql-codegen/typescript-operations": "^4.2.1",
+    "@graphql-codegen/typescript-react-apollo": "^4.3.0",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
+    "concurrently": "^8.2.2",
     "eslint": "^8",
     "eslint-config-next": "14.2.5",
     "typescript": "^5"

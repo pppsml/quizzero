@@ -1,22 +1,23 @@
 'use client'
 import { UserContext } from "@/entities/user/model/context";
-import { PropsWithChildren, useState } from "react";
+import {
+  useGetMeSuspenseQuery,
+  User,
+} from "@/shared/api";
+import { PropsWithChildren, useEffect, useState } from "react";
 
 export const UserProvider = ({ children }: PropsWithChildren) => {
-  const [user, setUser] = useState<any | null>(null); //fix to User type
+  const { data: getMeData } = useGetMeSuspenseQuery({ fetchPolicy: "no-cache" });
+  const [user, setUser] = useState<User | null>(null);
 
-  // useEffect(() => {
-  //   const getUser = async () => {
-  //     const user = await getMe();
-  //     setUser(user);
-  //   };
-  //   getUser();
-  // },
+  useEffect(() => {
+    if (getMeData && getMeData.getMe) {
+      setUser(getMeData.getMe);
+    }
+  }, [getMeData]);
 
   return (
-    <UserContext.Provider
-      value={{ user, isAuth: !!user, setUser }}
-    >
+    <UserContext.Provider value={{ user, isAuth: !!user, setUser }}>
       {children}
     </UserContext.Provider>
   );

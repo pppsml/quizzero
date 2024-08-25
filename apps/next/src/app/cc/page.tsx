@@ -1,4 +1,5 @@
 "use client";
+import { useUserContext } from "@/entities/user/model/context";
 import { gql, useMutation, useSuspenseQuery } from "@apollo/client";
 
 export default function CcPage() {
@@ -47,6 +48,10 @@ export default function CcPage() {
       }
     }
   `);
+
+  // const { user } = useUserContext()
+
+  // console.log(user);
 
   return (
     <>

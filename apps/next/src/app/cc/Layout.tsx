@@ -1,3 +1,5 @@
-export default function Layout() {
-  return <div>Layout</div>;
+import { PropsWithChildren } from "react";
+
+export default function Layout({children}: PropsWithChildren) {
+  return <div>{children}</div>;
 }
