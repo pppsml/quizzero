@@ -1,22 +1,14 @@
-# Turborepo starter
-
-This is an official starter Turborepo.
-
-## Using this example
-
-Run the following command:
-
-```sh
-npx create-turbo@latest
-```
-
-## What's inside?
-
-This Turborepo includes the following packages/apps:
-
+# Quizzero repository
 ### Apps and Packages
 
-- `@repo/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
+Apps:
+- [backend](https://github.com/pppsml/quizzero/tree/main/apps/backend): `NestJS + Apollo GraphQL + Mongoose`
+- [frontend](https://github.com/pppsml/quizzero/tree/main/apps/frontend): `React + vite + Apollo Client` **deprecated**
+- [microservices](https://github.com/pppsml/quizzero/tree/refactor-backend--microservices/apps/microservice): `backend implementation with NestJS microservices.` **WIP**
+- [next](https://github.com/pppsml/quizzero/tree/next/apps/next): `NextJS with App Router + Apollo Client` **WIP**
+Packages:
+- [@repo/eslint-config](https://github.com/pppsml/quizzero/tree/main/packages/eslint-config): `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
+- [@repo/types](https://github.com/pppsml/quizzero/tree/main/packages/types): `all app types, interfaces, and enums`
 
 Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
 
@@ -26,7 +18,6 @@ This Turborepo has some additional tools already setup for you:
 
 - [TypeScript](https://www.typescriptlang.org/) for static type checking
 - [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
 
 ### Build
 
